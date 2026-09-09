@@ -8,6 +8,8 @@
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f2f5;color:#1a1a2e}
         .app{max-width:1500px;margin:0 auto;padding:16px}
+
+        /* Header */
         .header{background:linear-gradient(135deg,#0f3e2e,#1b6b4a);color:#fff;border-radius:18px;padding:22px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px;box-shadow:0 6px 24px rgba(0,0,0,.18);gap:16px}
         .header-brand h1{font-size:1.45rem;font-weight:800;letter-spacing:-.5px}
         .header-brand .subtitle{font-size:.78rem;opacity:.85;margin-top:3px}
@@ -16,11 +18,19 @@
         .header-controls label{font-size:.75rem;font-weight:600;opacity:.9;white-space:nowrap}
         .header-controls select{padding:7px 14px;border-radius:30px;border:none;font-size:.82rem;font-weight:700;background:#fff;color:#0f3e2e;cursor:pointer;outline:none;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s}
         .header-controls select:hover{transform:scale(1.02)}
+
+        /* Main layout */
         .main{display:grid;grid-template-columns:380px 1fr;gap:20px}
+
+        /* Left column */
         .left-column{display:flex;flex-direction:column;gap:16px;height:calc(100vh - 130px);min-height:420px}
+
+        /* Panels */
         .panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column;transition:box-shadow .2s}
         .panel:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
         .panel-title{font-size:.95rem;font-weight:800;margin-bottom:14px;color:#0f3e2e;display:flex;align-items:center;gap:8px;border-bottom:2px solid #f0f4f2;padding-bottom:10px;letter-spacing:-.2px}
+
+        /* Product panel */
         .product-panel{flex:1;min-height:0;overflow:hidden}
         .product-list{flex:1;overflow-y:auto;border-radius:14px;padding:4px;scrollbar-width:thin;scrollbar-color:#dde0e3 transparent}
         .product-list::-webkit-scrollbar{width:6px}
@@ -34,6 +44,8 @@
         .product-price{font-size:1.2rem;font-weight:800;color:#0f3e2e;letter-spacing:-.3px}
         .add-btn{background:#1b6b4a;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:1.25rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;box-shadow:0 3px 8px rgba(27,107,74,.25)}
         .add-btn:hover{background:#0f3e2e;transform:scale(1.1)}
+
+        /* Search & filter */
         .search-wrap{position:relative;margin-bottom:10px}
         .search-wrap input{width:100%;padding:10px 38px 10px 14px;border:2px solid #eef0f2;border-radius:12px;font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s;background:#fafbfe}
         .search-wrap input:focus{border-color:#1b6b4a;box-shadow:0 0 0 3px rgba(27,107,74,.1);background:#fff}
@@ -46,6 +58,8 @@
         .category-filter{margin-bottom:12px}
         .category-filter select{width:100%;padding:10px 12px;border:2px solid #eef0f2;border-radius:12px;font-size:.84rem;outline:none;background:#fafbfe;cursor:pointer}
         .category-filter select:focus{border-color:#1b6b4a}
+
+        /* Programs panel */
         .program-panel{flex-shrink:0;max-height:35%;overflow-y:auto}
         .program-card{display:flex;flex-direction:column;padding:16px;gap:8px;border-radius:14px;border:1px solid #e8ecef;margin-bottom:12px;background:#fff;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.02)}
         .program-card:hover{border-color:#1b6b4a;box-shadow:0 4px 14px rgba(27,107,74,.08);transform:translateX(3px)}
@@ -66,9 +80,13 @@
         .stepper button{background:#f0f2f5;border:none;width:28px;height:28px;border-radius:6px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;color:#333}
         .stepper button:hover{background:#dde0e4}
         .stepper span{font-weight:800;min-width:24px;text-align:center;font-size:.9rem}
+        .trial-add{width:100%;margin-top:8px;background:#1b6b4a;color:#fff;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer}
         .trial-price-display{background:#eef7f2;border:1px solid #cde5d8;border-radius:8px;padding:10px;margin-top:10px;text-align:center;font-weight:700;color:#0f3e2e}
+
+        /* Cart panel */
         .cart-panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column;height:calc(100vh - 130px);min-height:420px;transition:box-shadow .2s}
         .cart-panel:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
+
         .customer-info,.delivery-info{margin-bottom:12px;padding:10px;background:#fafbfc;border-radius:10px;border:1px solid #eef0f2}
         .customer-info label,.delivery-info label{display:block;font-size:.78rem;font-weight:700;color:#555;margin-bottom:4px}
         .customer-info input,.delivery-info select,.delivery-info input[type="text"]{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:.85rem;outline:none;background:#fff;margin-bottom:8px}
@@ -78,7 +96,9 @@
         .segmented input[type="radio"]{display:none}
         .segmented label:hover{background:rgba(255,255,255,.5);color:#333}
         .segmented input[type="radio"]:checked+label{background:#1b6b4a;color:#fff;box-shadow:0 2px 6px rgba(27,107,74,.3)}
-        .address-input{margin-top:8px}
+        .delivery-info .region-select,.delivery-info .address-input{margin-top:8px}
+
+        /* Cart table */
         .cart-table{flex:1;overflow-y:auto;border-radius:14px;border:1px solid #f0f2f4;scrollbar-width:thin;scrollbar-color:#dde0e3 transparent}
         .cart-table::-webkit-scrollbar{width:6px}
         .cart-table::-webkit-scrollbar-thumb{background:#dde0e3;border-radius:10px}
@@ -93,6 +113,8 @@
         .remove-btn{background:#fee;color:#d44}
         .remove-btn:hover{background:#fdd;transform:scale(1.1)}
         .qty-val{font-weight:800;min-width:26px;text-align:center;font-size:.95rem}
+
+        /* Summary */
         .summary{background:#f8f9fb;border-radius:14px;padding:14px 18px;margin-top:14px;border:1px solid #f0f2f4}
         .summary-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.86rem;border-bottom:1px solid #e8ecef}
         .summary-row:last-child{border-bottom:none}
@@ -101,12 +123,18 @@
         .summary-row.total{font-size:1rem;border-top:2px solid #ddd;padding-top:10px;margin-top:6px}
         .summary-row.total .value{color:#0f3e2e;font-size:1.2rem}
         .print-hide{display:flex}
+
+        /* Buttons */
         .print-btn,.clear-btn{width:100%;padding:10px;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;margin-top:10px;transition:background .2s,transform .1s}
         .print-btn{background:#1b6b4a;color:#fff}
         .print-btn:hover{background:#0f3e2e;transform:scale(1.01)}
         .clear-btn{background:#fee;color:#d44;border:1px solid #fdd}
         .clear-btn:hover{background:#fdd;transform:scale(1.01)}
+
+        /* Print header/footer */
         .print-header,.print-footer{display:none}
+
+        /* Print styles */
         @media print{
             body{background:#fff;color:#000;padding:0}
             .app{max-width:100%;padding:0}
@@ -126,12 +154,12 @@
             .cart-table th,.cart-table td{padding:6px 4px;text-align:center;font-size:.85rem;border-bottom:1px solid #ccc!important;color:#000!important;word-break:break-word;vertical-align:middle}
             .cart-table tr{border-bottom:1px solid #ccc!important}
             .cart-table thead th{background:#eee!important;border-bottom:2px solid #000!important;position:static;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
-            .cart-table th:nth-child(1),.cart-table td:nth-child(1){width:55%;text-align:left;padding-left:10px}
-            .cart-table th:nth-child(2),.cart-table td:nth-child(2){width:15%}
-            .cart-table th:nth-child(3),.cart-table td:nth-child(3){width:15%}
-            .cart-table th:nth-child(4),.cart-table td:nth-child(4){width:15%}
-            .cart-table th:nth-child(5),.cart-table td:nth-child(5){display:none}
-            .cart-item-name{white-space:normal;word-break:break-word;display:table-cell!important;padding-left:10px!important}
+            .cart-table th:nth-child(1),.cart-table td:nth-child(1){width:55%;text-align:left;padding-left:10px;}
+            .cart-table th:nth-child(2),.cart-table td:nth-child(2){width:15%;}
+            .cart-table th:nth-child(3),.cart-table td:nth-child(3){width:15%;}
+            .cart-table th:nth-child(4),.cart-table td:nth-child(4){width:15%;}
+            .cart-table th:nth-child(5),.cart-table td:nth-child(5){display:none;}
+            .cart-item-name{white-space:normal;word-break:break-word;display:table-cell!important;padding-left:10px!important;}
             .qty-control,.remove-btn{border:none;background:none}
             .qty-btn,.remove-btn{display:none}
             .qty-val{font-size:.9rem}
@@ -143,9 +171,12 @@
             .print-footer{display:block;text-align:center;margin-top:30px;font-size:.9rem}
             .print-hide{display:none!important}
         }
+
+        /* Responsive */
         @media (max-width:1024px){
             .main{grid-template-columns:300px 1fr;gap:16px}
             .left-column,.cart-panel{height:calc(100vh - 110px)}
+            .header{padding:18px 22px}
         }
         @media (max-width:700px){
             body{padding:10px}
@@ -222,6 +253,7 @@
             </div>
         </div>
         <div class="main">
+            <!-- Left Column -->
             <div class="left-column">
                 <div class="panel product-panel">
                     <div class="panel-title">📦 Products</div>
@@ -256,14 +288,16 @@
                     <div id="programList"></div>
                 </div>
             </div>
+            <!-- Cart Panel -->
             <div class="cart-panel">
                 <div class="print-header">
                     <h2>Bell Corner</h2>
                     <p>Order Form</p>
                     <p>Date: <span id="printDate"></span></p>
-                    <p>Reference: <span id="printOrderRef"></span></p>
+                    <p>Order Ref: <span id="printOrderRef"></span></p>
                 </div>
                 <div class="print-order-details" style="display:none;">
+                    <p><span class="detail-label">Order Reference:</span><span id="printOrderRefDetail"></span></p>
                     <p><span class="detail-label">Customer Name:</span><span id="printCustomerName"></span></p>
                     <p><span class="detail-label">Contact Number:</span><span id="printCustomerPhone"></span></p>
                     <p><span class="detail-label">Delivery:</span><span id="printDeliveryMethod"></span></p>
@@ -298,7 +332,6 @@
                     </table>
                 </div>
                 <div class="summary">
-                    <div class="summary-row" id="orderRefRow" style="display:none;"><span class="label">Order Ref</span><span class="value" id="orderRefValue">-</span></div>
                     <div class="summary-row"><span class="label">Total Items</span><span class="value" id="totalItems">0</span></div>
                     <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="subtotal">RM 0.00</span></div>
                     <div class="summary-row print-hide"><span class="label">Total VP</span><span class="value" id="totalVP">0.00</span></div>
@@ -313,12 +346,6 @@
     </div>
 
     <script>
-        // Global error handler for debugging
-        window.onerror = function(msg, url, line, col, error) {
-            alert('Error: ' + msg + '\nLine: ' + line + '\nColumn: ' + col);
-            return false;
-        };
-
         // Product data (stock, name, category, VP, earnBase, retail, d25, d35, d42, d50)
         const P=[
             ['4462','Formula 1 - Banana Cream Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
@@ -397,7 +424,7 @@
             ['ULTIMATE', 'Ultimate Program', 'Programs', 0, 0, 0, null, null, null, null]
         ];
 
-        // Flavour arrays
+        // Flavour lists
         const f1Flavours = P.filter(p => ['4462','4465','4466','4467','4468','4470','4471'].includes(p[0]));
         const teaFlavours = P.filter(p => ['0105','0106','0190','2121'].includes(p[0]));
         const aloeFlavours = P.filter(p => ['0006','1065','2631'].includes(p[0]));
@@ -407,89 +434,14 @@
         const fishFlavours = P.filter(p => p[0] === '0065');
         const immuFlavours = P.filter(p => p[0] === '145K');
 
-        // Define program configurations
-        const PROGRAM_CONFIGS = {
-            trial: {
-                label: 'Trial Program',
-                items: [
-                    { type: 'f1', label: 'Formula 1', options: f1Flavours, skus: ['4462'] }
-                ],
-                fixedItems: ['182A', '295A'],
-                serviceFee: 100,
-                deliveryIncluded: true,
-                addBtn: 'addTrialToCart'
-            },
-            basic: {
-                label: 'Basic Program',
-                items: [
-                    { type: 'aloe', label: 'Aloe', options: aloeFlavours, skus: ['0006'] },
-                    { type: 'tea', label: 'Tea Mix', options: teaFlavours, skus: ['0105'] },
-                    { type: 'f1', label: 'Formula 1', options: f1Flavours, skus: ['4462'] }
-                ],
-                fixedItems: ['182A', '295A'],
-                serviceFee: 100,
-                deliveryIncluded: true,
-                addBtn: 'addBasicToCart'
-            },
-            advanced: {
-                label: 'Advanced Program',
-                items: [
-                    { type: 'aloe', label: 'Aloe', options: aloeFlavours, skus: ['0006'] },
-                    { type: 'tea', label: 'Tea Mix', options: teaFlavours, skus: ['0105'] },
-                    { type: 'f1', label: 'Formula 1', options: f1Flavours, skus: ['4462'] },
-                    { type: 'fibre', label: 'Fibre', options: fibreFlavours, skus: ['2864'] },
-                    { type: 'f3', label: 'Formula 3', options: f3Flavours, skus: ['0242'] }
-                ],
-                fixedItems: ['182A', '295A'],
-                serviceFee: 100,
-                deliveryIncluded: true,
-                addBtn: 'addAdvancedToCart'
-            },
-            ultimate: {
-                label: 'Ultimate Program',
-                items: [
-                    { type: 'aloe', label: 'Aloe', options: aloeFlavours, skus: ['0006'] },
-                    { type: 'tea', label: 'Tea Mix', options: teaFlavours, skus: ['0105'] },
-                    { type: 'f1', label: 'Formula 1', options: f1Flavours, skus: ['4462'] },
-                    { type: 'fibre', label: 'Fibre', options: fibreFlavours, skus: ['2864'] },
-                    { type: 'f3', label: 'Formula 3', options: f3Flavours, skus: ['0242'] },
-                    { type: 'multi', label: 'Multivitamin', options: multiFlavours, skus: ['3115'] },
-                    { type: 'fish', label: 'Fish Oil', options: fishFlavours, skus: ['0065'] },
-                    { type: 'immu', label: 'ImmuLift', options: immuFlavours, skus: ['145K'] }
-                ],
-                fixedItems: ['182A', '295A'],
-                serviceFee: 100,
-                deliveryIncluded: true,
-                addBtn: 'addUltimateToCart'
-            }
-        };
-
-        // State
+        // Cart state
         const cart = new Map();
-        let orderRef = null;
-        const programState = {};
-        Object.keys(PROGRAM_CONFIGS).forEach(key => {
-            programState[key] = {
-                items: PROGRAM_CONFIGS[key].items.map(item => ({
-                    type: item.type,
-                    skus: [...item.skus]
-                })),
-                qty: {}
-            };
-            PROGRAM_CONFIGS[key].items.forEach(item => {
-                programState[key].qty[item.type] = item.skus.length;
-            });
-        });
 
-        // Generate unique order reference (8 characters after HW-)
-        function generateOrderRef() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'HW-';
-            for (let i = 0; i < 8; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
+        // Program configurations
+        let trialConfig = { qty: 1, skus: [f1Flavours[0][0]] };
+        let basicConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]] };
+        let advancedConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]], fibreSkus: [fibreFlavours[0][0]], f3Skus: [f3Flavours[0][0]] };
+        let ultimateConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]], fibreSkus: [fibreFlavours[0][0]], f3Skus: [f3Flavours[0][0]], multiSkus: [multiFlavours[0][0]], fishSkus: [fishFlavours[0][0]], immuSkus: [immuFlavours[0][0]] };
 
         // Helpers
         const getPrice = (p, tier) => tier === 'retail' || p[5] === null ? p[5] : p[6 + (['0.25','0.35','0.42','0.5'].indexOf(tier))] ?? p[5];
@@ -499,78 +451,89 @@
         };
         const getProgramDeliveryFee = () => document.getElementById('regionSelector').value === 'west' ? 16 : 32;
         const deliveryFeeForSummary = () => {
-            const hasProgram = Array.from(cart.values()).some(item => item.product.isProgram);
+            const hasProgram = Array.from(cart.values()).some(item => item.product[2] === 'Programs' || item.product.isTrial || item.product.isBasic || item.product.isAdvanced || item.product.isUltimate);
             if (hasProgram) return 0;
             return getDeliveryFee();
         };
 
-        // Program price calculation
-        function calculateProgramPrice(programKey) {
-            const config = PROGRAM_CONFIGS[programKey];
-            const state = programState[programKey];
+        // Program price calculations
+        function trialProgramPrice(trial) {
             let sum = 0;
-            config.items.forEach(item => {
-                state.items.find(s => s.type === item.type).skus.forEach(sku => {
-                    const prod = item.options.find(o => o[0] === sku);
-                    sum += prod[5];
-                });
-            });
-            config.fixedItems.forEach(sku => {
-                const prod = P.find(p => p[0] === sku);
-                sum += prod[5];
-            });
-            sum += config.serviceFee;
-            if (config.deliveryIncluded) sum += getProgramDeliveryFee();
+            trial.skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
+            sum += P.find(p => p[0] === '182A')[5];
+            sum += P.find(p => p[0] === '295A')[5];
+            sum += 100;
+            sum += getProgramDeliveryFee();
+            return Math.ceil(sum / 10) * 10;
+        }
+        function basicProgramPrice() {
+            let sum = 0;
+            basicConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
+            basicConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
+            basicConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
+            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
+            return Math.ceil(sum / 10) * 10;
+        }
+        function advancedProgramPrice() {
+            let sum = 0;
+            advancedConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
+            advancedConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
+            advancedConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
+            advancedConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f => f[0] === sku)[5]; });
+            advancedConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f => f[0] === sku)[5]; });
+            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
+            return Math.ceil(sum / 10) * 10;
+        }
+        function ultimateProgramPrice() {
+            let sum = 0;
+            ultimateConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.multiSkus.forEach(sku => { sum += multiFlavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.fishSkus.forEach(sku => { sum += fishFlavours.find(f => f[0] === sku)[5]; });
+            ultimateConfig.immuSkus.forEach(sku => { sum += immuFlavours.find(f => f[0] === sku)[5]; });
+            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
             return Math.ceil(sum / 10) * 10;
         }
 
-        // Cart rendering
-        function renderCart() {
-            const tier = document.getElementById('discountTier').value;
-            const tbody = document.getElementById('cartBody');
-            let sub = 0, items = 0, vpTotal = 0;
-            const refRow = document.getElementById('orderRefRow');
-            const refVal = document.getElementById('orderRefValue');
-            if (cart.size > 0 && orderRef) {
-                refRow.style.display = 'flex';
-                refVal.textContent = orderRef;
-            } else refRow.style.display = 'none';
+        // Print order
+        function printOrder() {
+            if (cart.size === 0) { alert('Cart is empty. Please add products before printing.'); return; }
+            const now = new Date();
+            document.getElementById('printDate').textContent = now.toLocaleDateString('en-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const method = document.querySelector('input[name="delivery"]:checked').value;
+            const addr = document.getElementById('deliveryAddress').value;
 
-            tbody.innerHTML = cart.size ? Array.from(cart.entries()).map(([key, item]) => {
-                const p = item.product;
-                let price, total;
-                if (p.isProgram) {
-                    price = p.price;
-                    total = price * item.qty;
-                    vpTotal += p.vp * item.qty;
-                } else {
-                    price = getPrice(p, tier);
-                    total = price * item.qty;
-                    vpTotal += p[3] * item.qty;
-                }
-                sub += total;
-                items += item.qty;
-                const displayName = p.isProgram ? p.name : (p[2] === 'Programs' ? p[1] : `${p[0]} - ${p[1]}`);
-                return `<tr><td class="cart-item-name" title="${displayName}">${displayName}</td><td><div class="qty-control"><button class="qty-btn" data-stock="${key}" data-delta="-1">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" data-stock="${key}" data-delta="1">+</button></div></td><td>RM ${price.toFixed(2)}</td><td style="font-weight:700;">RM ${total.toFixed(2)}</td><td><button class="remove-btn" data-stock="${key}">✕</button></td></tr>`;
-            }).join('') : '<tr><td colspan="5" style="text-align:center;color:#999;padding:40px;">Cart is empty<br>Add products from the list</td></tr>';
+            // Generate order reference: ORD- + 8 characters based on current timestamp
+            const timePart = now.getTime().toString(36).toUpperCase().slice(-8);
+            const orderRef = 'ORD-' + timePart;
+            document.getElementById('printOrderRef').textContent = orderRef;
+            document.getElementById('printOrderRefDetail').textContent = orderRef;
 
-            const fee = deliveryFeeForSummary();
-            document.getElementById('totalItems').textContent = items;
-            document.getElementById('subtotal').textContent = 'RM ' + sub.toFixed(2);
-            document.getElementById('totalVP').textContent = vpTotal.toFixed(2);
-            document.getElementById('totalPrice').textContent = 'RM ' + (sub + fee).toFixed(2);
-            const feeRow = document.getElementById('deliveryFeeRow');
-            const isDelivery = document.querySelector('input[name="delivery"]:checked').value === 'delivery';
-            if (isDelivery) {
-                feeRow.style.display = 'flex';
-                const label = feeRow.querySelector('.label');
-                const value = feeRow.querySelector('.value');
-                label.textContent = fee === 0 ? 'Delivery Fee (Waived)' : 'Delivery Fee';
-                value.textContent = 'RM ' + fee.toFixed(2);
-            } else feeRow.style.display = 'none';
+            document.getElementById('printCustomerName').textContent = name || '';
+            document.getElementById('printCustomerPhone').textContent = phone || '';
+            document.getElementById('printDeliveryMethod').textContent = method === 'delivery' ? 'Delivery' : 'Pickup';
+            const row = document.getElementById('printAddressRow');
+            if (method === 'delivery') { document.getElementById('printDeliveryAddress').textContent = addr || ''; row.style.display = 'block'; }
+            else row.style.display = 'none';
+            document.title = 'Order_' + orderRef + '_' + now.toISOString().split('T')[0];
+            window.print();
         }
 
-        // Generate product list
+        // Search
+        function clearSearch() { document.getElementById('searchInput').value = ''; document.getElementById('searchWrap').classList.remove('has-text'); renderProducts(); document.getElementById('searchInput').focus(); }
+
+        const highlight = (text, terms) => {
+            if (!terms?.length) return text;
+            let result = text;
+            terms.forEach(t => { result = result.replace(new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark>$1</mark>'); });
+            return result;
+        };
+
         function renderProducts() {
             const search = document.getElementById('searchInput').value.toLowerCase().trim();
             const cat = document.getElementById('categoryFilter').value;
@@ -586,191 +549,466 @@
             });
             list.innerHTML = filtered.length ? filtered.map(p => {
                 const price = getPrice(p, tier);
-                return `<div class="product-item"><div class="product-name" title="${p[0]} - ${p[1]}"><span class="sku">${p[0]}</span>${p[1]}</div><div class="product-vp">VP: ${p[3].toFixed(2)}</div><div class="product-bottom"><div class="product-price">RM ${price.toFixed(2)}</div><button class="add-btn" data-stock="${p[0]}">+</button></div></div>`;
+                return `<div class="product-item"><div class="product-name" title="${p[0]} - ${p[1]}"><span class="sku">${p[0]}</span>${highlight(p[1], terms)}</div><div class="product-vp">VP: ${p[3].toFixed(2)}</div><div class="product-bottom"><div class="product-price">RM ${price.toFixed(2)}</div><button class="add-btn" data-stock="${p[0]}">+</button></div></div>`;
             }).join('') : '<div style="padding:30px;text-align:center;color:#aaa;">No products found</div>';
         }
 
-        // Generate program cards (generic)
         function renderPrograms() {
             const list = document.getElementById('programList');
-            let html = '';
-            Object.keys(PROGRAM_CONFIGS).forEach(progKey => {
-                const config = PROGRAM_CONFIGS[progKey];
-                const state = programState[progKey];
-                html += `<div class="program-card" id="${progKey}ProgramCard">
-                    <div class="program-title">${config.label}</div>
+            const trial = P.find(p => p[0] === 'TRIAL');
+            const basic = P.find(p => p[0] === 'BASIC');
+            const advanced = P.find(p => p[0] === 'ADVANCED');
+            const ultimate = P.find(p => p[0] === 'ULTIMATE');
+
+            const trialHTML = `
+                <div class="program-card" id="trialProgramCard">
+                    <div class="program-title">${trial[1]}</div>
                     <div class="program-bottom">
-                        <div class="program-price" id="${progKey}PriceOutside">RM 0.00</div>
+                        <div class="program-price" id="trialPriceOutside">RM 0.00</div>
                         <div class="program-actions">
-                            <button class="configure-btn" onclick="toggleProgramConfig('${progKey}')" id="${progKey}ToggleBtn">Configure</button>
-                            <button class="add-btn" onclick="addProgramToCart('${progKey}')">+</button>
+                            <button class="configure-btn" onclick="toggleTrialConfig()" id="trialToggleBtn">Configure</button>
+                            <button class="add-btn" onclick="addTrialToCart()">+</button>
                         </div>
                     </div>
-                    <div class="program-config-content" id="${progKey}ConfigContent">
-                        ${config.items.map(item => {
-                            const qty = state.qty[item.type];
-                            return `<div>
-                                <div class="trial-row">
-                                    <label>${item.label} Qty:</label>
-                                    <div class="stepper">
-                                        <button type="button" onclick="programQty('${progKey}','${item.type}',-1)">−</button>
-                                        <span id="${progKey}_${item.type}_qty">${qty}</span>
-                                        <button type="button" onclick="programQty('${progKey}','${item.type}',1)">+</button>
-                                    </div>
-                                </div>
-                                <div id="${progKey}_${item.type}_rows"></div>
-                            </div>`;
-                        }).join('')}
-                        <div class="trial-price-display" id="${progKey}PriceDisplay">Price: RM 0</div>
+                    <div class="program-config-content" id="trialConfigContent">
+                        <div class="trial-row">
+                            <label>Formula 1 Qty:</label>
+                            <div class="stepper">
+                                <button type="button" onclick="trialQtyMinus()">−</button>
+                                <span id="trialQtyDisplay">1</span>
+                                <button type="button" onclick="trialQtyPlus()">+</button>
+                            </div>
+                        </div>
+                        <div id="trialFlavourRows"></div>
+                        <div class="trial-price-display" id="trialPriceDisplay">Price: RM 0</div>
                     </div>
-                </div>`;
-            });
-            list.innerHTML = html;
-            Object.keys(PROGRAM_CONFIGS).forEach(progKey => {
-                updateFlavourRows(progKey);
-                updatePriceDisplay(progKey);
-            });
+                </div>
+            `;
+            const basicHTML = `
+                <div class="program-card" id="basicProgramCard">
+                    <div class="program-title">${basic[1]}</div>
+                    <div class="program-bottom">
+                        <div class="program-price" id="basicPriceOutside">RM 0.00</div>
+                        <div class="program-actions">
+                            <button class="configure-btn" onclick="toggleBasicConfig()" id="basicToggleBtn">Configure</button>
+                            <button class="add-btn" onclick="addBasicToCart()">+</button>
+                        </div>
+                    </div>
+                    <div class="program-config-content" id="basicConfigContent">
+                        <div id="basicAloeSection">
+                            <div class="trial-row">
+                                <label>Aloe Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="basicQty('aloe', -1)">−</button>
+                                    <span id="basicAloeQty">${basicConfig.aloeSkus.length}</span>
+                                    <button type="button" onclick="basicQty('aloe', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="basicAloeFlavourRows"></div>
+                        </div>
+                        <div id="basicTeaSection">
+                            <div class="trial-row">
+                                <label>Tea Mix Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="basicQty('tea', -1)">−</button>
+                                    <span id="basicTeaQty">${basicConfig.teaSkus.length}</span>
+                                    <button type="button" onclick="basicQty('tea', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="basicTeaFlavourRows"></div>
+                        </div>
+                        <div id="basicF1Section">
+                            <div class="trial-row">
+                                <label>Formula 1 Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="basicQty('f1', -1)">−</button>
+                                    <span id="basicF1Qty">${basicConfig.f1Skus.length}</span>
+                                    <button type="button" onclick="basicQty('f1', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="basicF1FlavourRows"></div>
+                        </div>
+                        <div class="trial-price-display" id="basicPriceDisplay">Price: RM 0</div>
+                    </div>
+                </div>
+            `;
+            const advancedHTML = `
+                <div class="program-card" id="advancedProgramCard">
+                    <div class="program-title">${advanced[1]}</div>
+                    <div class="program-bottom">
+                        <div class="program-price" id="advancedPriceOutside">RM 0.00</div>
+                        <div class="program-actions">
+                            <button class="configure-btn" onclick="toggleAdvancedConfig()" id="advancedToggleBtn">Configure</button>
+                            <button class="add-btn" onclick="addAdvancedToCart()">+</button>
+                        </div>
+                    </div>
+                    <div class="program-config-content" id="advancedConfigContent">
+                        <div id="advancedAloeSection">
+                            <div class="trial-row">
+                                <label>Aloe Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="advancedQty('aloe', -1)">−</button>
+                                    <span id="advancedAloeQty">${advancedConfig.aloeSkus.length}</span>
+                                    <button type="button" onclick="advancedQty('aloe', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="advancedAloeFlavourRows"></div>
+                        </div>
+                        <div id="advancedTeaSection">
+                            <div class="trial-row">
+                                <label>Tea Mix Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="advancedQty('tea', -1)">−</button>
+                                    <span id="advancedTeaQty">${advancedConfig.teaSkus.length}</span>
+                                    <button type="button" onclick="advancedQty('tea', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="advancedTeaFlavourRows"></div>
+                        </div>
+                        <div id="advancedF1Section">
+                            <div class="trial-row">
+                                <label>Formula 1 Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="advancedQty('f1', -1)">−</button>
+                                    <span id="advancedF1Qty">${advancedConfig.f1Skus.length}</span>
+                                    <button type="button" onclick="advancedQty('f1', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="advancedF1FlavourRows"></div>
+                        </div>
+                        <div id="advancedFibreSection">
+                            <div class="trial-row">
+                                <label>Fibre Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="advancedQty('fibre', -1)">−</button>
+                                    <span id="advancedFibreQty">${advancedConfig.fibreSkus.length}</span>
+                                    <button type="button" onclick="advancedQty('fibre', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="advancedFibreFlavourRows"></div>
+                        </div>
+                        <div id="advancedF3Section">
+                            <div class="trial-row">
+                                <label>Formula 3 Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="advancedQty('f3', -1)">−</button>
+                                    <span id="advancedF3Qty">${advancedConfig.f3Skus.length}</span>
+                                    <button type="button" onclick="advancedQty('f3', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trial-price-display" id="advancedPriceDisplay">Price: RM 0</div>
+                    </div>
+                </div>
+            `;
+            const ultimateHTML = `
+                <div class="program-card" id="ultimateProgramCard">
+                    <div class="program-title">${ultimate[1]}</div>
+                    <div class="program-bottom">
+                        <div class="program-price" id="ultimatePriceOutside">RM 0.00</div>
+                        <div class="program-actions">
+                            <button class="configure-btn" onclick="toggleUltimateConfig()" id="ultimateToggleBtn">Configure</button>
+                            <button class="add-btn" onclick="addUltimateToCart()">+</button>
+                        </div>
+                    </div>
+                    <div class="program-config-content" id="ultimateConfigContent">
+                        <div id="ultimateAloeSection">
+                            <div class="trial-row">
+                                <label>Aloe Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('aloe', -1)">−</button>
+                                    <span id="ultimateAloeQty">${ultimateConfig.aloeSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('aloe', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="ultimateAloeFlavourRows"></div>
+                        </div>
+                        <div id="ultimateTeaSection">
+                            <div class="trial-row">
+                                <label>Tea Mix Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('tea', -1)">−</button>
+                                    <span id="ultimateTeaQty">${ultimateConfig.teaSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('tea', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="ultimateTeaFlavourRows"></div>
+                        </div>
+                        <div id="ultimateF1Section">
+                            <div class="trial-row">
+                                <label>Formula 1 Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('f1', -1)">−</button>
+                                    <span id="ultimateF1Qty">${ultimateConfig.f1Skus.length}</span>
+                                    <button type="button" onclick="ultimateQty('f1', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="ultimateF1FlavourRows"></div>
+                        </div>
+                        <div id="ultimateFibreSection">
+                            <div class="trial-row">
+                                <label>Fibre Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('fibre', -1)">−</button>
+                                    <span id="ultimateFibreQty">${ultimateConfig.fibreSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('fibre', 1)">+</button>
+                                </div>
+                            </div>
+                            <div id="ultimateFibreFlavourRows"></div>
+                        </div>
+                        <div id="ultimateF3Section">
+                            <div class="trial-row">
+                                <label>Formula 3 Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('f3', -1)">−</button>
+                                    <span id="ultimateF3Qty">${ultimateConfig.f3Skus.length}</span>
+                                    <button type="button" onclick="ultimateQty('f3', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ultimateMultiSection">
+                            <div class="trial-row">
+                                <label>Multivitamin Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('multi', -1)">−</button>
+                                    <span id="ultimateMultiQty">${ultimateConfig.multiSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('multi', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ultimateFishSection">
+                            <div class="trial-row">
+                                <label>Fish Oil Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('fish', -1)">−</button>
+                                    <span id="ultimateFishQty">${ultimateConfig.fishSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('fish', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ultimateImmuSection">
+                            <div class="trial-row">
+                                <label>ImmuLift Qty:</label>
+                                <div class="stepper">
+                                    <button type="button" onclick="ultimateQty('immu', -1)">−</button>
+                                    <span id="ultimateImmuQty">${ultimateConfig.immuSkus.length}</span>
+                                    <button type="button" onclick="ultimateQty('immu', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trial-price-display" id="ultimatePriceDisplay">Price: RM 0</div>
+                    </div>
+                </div>
+            `;
+            list.innerHTML = trialHTML + basicHTML + advancedHTML + ultimateHTML;
+            updateTrialFlavourRows();
+            updateTrialPriceDisplay();
+            updateBasicFlavourRows();
+            updateBasicPriceDisplay();
+            updateAdvancedFlavourRows();
+            updateAdvancedPriceDisplay();
+            updateUltimateFlavourRows();
+            updateUltimatePriceDisplay();
         }
 
-        // Toggle config visibility
-        function toggleProgramConfig(progKey) {
-            const content = document.getElementById(progKey + 'ConfigContent');
-            content.classList.toggle('show');
-            const btn = document.getElementById(progKey + 'ToggleBtn');
-            btn.textContent = content.classList.contains('show') ? 'Close' : 'Configure';
-            if (content.classList.contains('show')) updatePriceDisplay(progKey);
+        // Toggle functions
+        function toggleTrialConfig() { const content = document.getElementById('trialConfigContent'); content.classList.toggle('show'); document.getElementById('trialToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) updateTrialPriceDisplay(); }
+        function toggleBasicConfig() { const content = document.getElementById('basicConfigContent'); content.classList.toggle('show'); document.getElementById('basicToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateBasicFlavourRows(); updateBasicPriceDisplay(); } }
+        function toggleAdvancedConfig() { const content = document.getElementById('advancedConfigContent'); content.classList.toggle('show'); document.getElementById('advancedToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateAdvancedFlavourRows(); updateAdvancedPriceDisplay(); } }
+        function toggleUltimateConfig() { const content = document.getElementById('ultimateConfigContent'); content.classList.toggle('show'); document.getElementById('ultimateToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateUltimateFlavourRows(); updateUltimatePriceDisplay(); } }
+
+        // Quantity functions for trial
+        function trialQtyPlus() { if (trialConfig.qty < 10) { trialConfig.qty++; trialConfig.skus.push(f1Flavours[0][0]); updateTrialFlavourRows(); updateTrialPriceDisplay(); document.getElementById('trialQtyDisplay').textContent = trialConfig.qty; } }
+        function trialQtyMinus() { if (trialConfig.qty > 1) { trialConfig.qty--; trialConfig.skus.pop(); updateTrialFlavourRows(); updateTrialPriceDisplay(); document.getElementById('trialQtyDisplay').textContent = trialConfig.qty; } }
+
+        // Quantity functions for basic
+        function basicQty(type, delta) {
+            if (type === 'f1') { let newQty = basicConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.f1Skus.push(f1Flavours[0][0]); else basicConfig.f1Skus.pop(); document.getElementById('basicF1Qty').textContent = basicConfig.f1Skus.length; updateBasicFlavourRows(); } }
+            else if (type === 'tea') { let newQty = basicConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.teaSkus.push(teaFlavours[0][0]); else basicConfig.teaSkus.pop(); document.getElementById('basicTeaQty').textContent = basicConfig.teaSkus.length; updateBasicFlavourRows(); } }
+            else if (type === 'aloe') { let newQty = basicConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.aloeSkus.push(aloeFlavours[0][0]); else basicConfig.aloeSkus.pop(); document.getElementById('basicAloeQty').textContent = basicConfig.aloeSkus.length; updateBasicFlavourRows(); } }
+            updateBasicPriceDisplay();
         }
 
-        // Change quantity for a program item type
-        function programQty(progKey, type, delta) {
-            const config = PROGRAM_CONFIGS[progKey];
-            const state = programState[progKey];
-            const item = config.items.find(i => i.type === type);
-            const currentQty = state.qty[type];
-            const newQty = currentQty + delta;
-            if (newQty >= 1 && newQty <= 10) {
-                const itemState = state.items.find(s => s.type === type);
-                if (delta > 0) itemState.skus.push(item.options[0][0]);
-                else itemState.skus.pop();
-                state.qty[type] = newQty;
-                document.getElementById(`${progKey}_${type}_qty`).textContent = newQty;
-                updateFlavourRows(progKey);
-                updatePriceDisplay(progKey);
+        // Quantity functions for advanced
+        function advancedQty(type, delta) {
+            if (type === 'f1') { let newQty = advancedConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.f1Skus.push(f1Flavours[0][0]); else advancedConfig.f1Skus.pop(); document.getElementById('advancedF1Qty').textContent = advancedConfig.f1Skus.length; updateAdvancedFlavourRows(); } }
+            else if (type === 'tea') { let newQty = advancedConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.teaSkus.push(teaFlavours[0][0]); else advancedConfig.teaSkus.pop(); document.getElementById('advancedTeaQty').textContent = advancedConfig.teaSkus.length; updateAdvancedFlavourRows(); } }
+            else if (type === 'aloe') { let newQty = advancedConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.aloeSkus.push(aloeFlavours[0][0]); else advancedConfig.aloeSkus.pop(); document.getElementById('advancedAloeQty').textContent = advancedConfig.aloeSkus.length; updateAdvancedFlavourRows(); } }
+            else if (type === 'fibre') { let newQty = advancedConfig.fibreSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.fibreSkus.push(fibreFlavours[0][0]); else advancedConfig.fibreSkus.pop(); document.getElementById('advancedFibreQty').textContent = advancedConfig.fibreSkus.length; updateAdvancedFlavourRows(); } }
+            else if (type === 'f3') { let newQty = advancedConfig.f3Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.f3Skus.push(f3Flavours[0][0]); else advancedConfig.f3Skus.pop(); document.getElementById('advancedF3Qty').textContent = advancedConfig.f3Skus.length; updateAdvancedPriceDisplay(); } }
+        }
+
+        // Quantity functions for ultimate
+        function ultimateQty(type, delta) {
+            if (type === 'f1') { let newQty = ultimateConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.f1Skus.push(f1Flavours[0][0]); else ultimateConfig.f1Skus.pop(); document.getElementById('ultimateF1Qty').textContent = ultimateConfig.f1Skus.length; updateUltimateFlavourRows(); } }
+            else if (type === 'tea') { let newQty = ultimateConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.teaSkus.push(teaFlavours[0][0]); else ultimateConfig.teaSkus.pop(); document.getElementById('ultimateTeaQty').textContent = ultimateConfig.teaSkus.length; updateUltimateFlavourRows(); } }
+            else if (type === 'aloe') { let newQty = ultimateConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.aloeSkus.push(aloeFlavours[0][0]); else ultimateConfig.aloeSkus.pop(); document.getElementById('ultimateAloeQty').textContent = ultimateConfig.aloeSkus.length; updateUltimateFlavourRows(); } }
+            else if (type === 'fibre') { let newQty = ultimateConfig.fibreSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.fibreSkus.push(fibreFlavours[0][0]); else ultimateConfig.fibreSkus.pop(); document.getElementById('ultimateFibreQty').textContent = ultimateConfig.fibreSkus.length; updateUltimateFlavourRows(); } }
+            else if (type === 'f3') { let newQty = ultimateConfig.f3Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.f3Skus.push(f3Flavours[0][0]); else ultimateConfig.f3Skus.pop(); document.getElementById('ultimateF3Qty').textContent = ultimateConfig.f3Skus.length; updateUltimatePriceDisplay(); } }
+            else if (type === 'multi') { let newQty = ultimateConfig.multiSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.multiSkus.push(multiFlavours[0][0]); else ultimateConfig.multiSkus.pop(); document.getElementById('ultimateMultiQty').textContent = ultimateConfig.multiSkus.length; updateUltimatePriceDisplay(); } }
+            else if (type === 'fish') { let newQty = ultimateConfig.fishSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.fishSkus.push(fishFlavours[0][0]); else ultimateConfig.fishSkus.pop(); document.getElementById('ultimateFishQty').textContent = ultimateConfig.fishSkus.length; updateUltimatePriceDisplay(); } }
+            else if (type === 'immu') { let newQty = ultimateConfig.immuSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.immuSkus.push(immuFlavours[0][0]); else ultimateConfig.immuSkus.pop(); document.getElementById('ultimateImmuQty').textContent = ultimateConfig.immuSkus.length; updateUltimatePriceDisplay(); } }
+        }
+
+        // Update flavour dropdowns
+        function updateTrialFlavourRows() {
+            const container = document.getElementById('trialFlavourRows'); if (!container) return; container.innerHTML = '';
+            for (let i = 0; i < trialConfig.qty; i++) {
+                const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`;
+                const select = document.createElement('select'); select.dataset.index = i;
+                f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === trialConfig.skus[i]) opt.selected = true; select.appendChild(opt); });
+                select.onchange = (e) => { trialConfig.skus[parseInt(e.target.dataset.index)] = e.target.value; updateTrialPriceDisplay(); };
+                row.appendChild(select); container.appendChild(row);
             }
         }
-
-        // Update flavour dropdowns for a program
-        function updateFlavourRows(progKey) {
-            const config = PROGRAM_CONFIGS[progKey];
-            const state = programState[progKey];
-            config.items.forEach(item => {
-                const containerId = `${progKey}_${item.type}_rows`;
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                container.innerHTML = '';
-                const itemState = state.items.find(s => s.type === item.type);
-                for (let i = 0; i < itemState.skus.length; i++) {
-                    const row = document.createElement('div');
-                    row.className = 'trial-row';
-                    row.innerHTML = `<label>${item.label} #${i+1}:</label>`;
-                    const select = document.createElement('select');
-                    select.dataset.index = i;
-                    item.options.forEach(opt => {
-                        const option = document.createElement('option');
-                        option.value = opt[0];
-                        option.textContent = opt[1];
-                        if (opt[0] === itemState.skus[i]) option.selected = true;
-                        select.appendChild(option);
-                    });
-                    select.onchange = (e) => {
-                        itemState.skus[parseInt(e.target.dataset.index)] = e.target.value;
-                        updatePriceDisplay(progKey);
-                    };
-                    row.appendChild(select);
-                    container.appendChild(row);
-                }
-            });
+        function updateBasicFlavourRows() {
+            const aloeContainer = document.getElementById('basicAloeFlavourRows');
+            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < basicConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
+            const teaContainer = document.getElementById('basicTeaFlavourRows');
+            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < basicConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
+            const f1Container = document.getElementById('basicF1FlavourRows');
+            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < basicConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
+        }
+        function updateAdvancedFlavourRows() {
+            const aloeContainer = document.getElementById('advancedAloeFlavourRows');
+            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
+            const teaContainer = document.getElementById('advancedTeaFlavourRows');
+            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
+            const f1Container = document.getElementById('advancedF1FlavourRows');
+            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < advancedConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
+            const fibreContainer = document.getElementById('advancedFibreFlavourRows');
+            if (fibreContainer) { fibreContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.fibreSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Fibre #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; fibreFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.fibreSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.fibreSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); fibreContainer.appendChild(row); } }
+        }
+        function updateUltimateFlavourRows() {
+            const aloeContainer = document.getElementById('ultimateAloeFlavourRows');
+            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
+            const teaContainer = document.getElementById('ultimateTeaFlavourRows');
+            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
+            const f1Container = document.getElementById('ultimateF1FlavourRows');
+            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < ultimateConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
+            const fibreContainer = document.getElementById('ultimateFibreFlavourRows');
+            if (fibreContainer) { fibreContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.fibreSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Fibre #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; fibreFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.fibreSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.fibreSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); fibreContainer.appendChild(row); } }
         }
 
-        // Update price display for a program
-        function updatePriceDisplay(progKey) {
-            const display = document.getElementById(progKey + 'PriceDisplay');
-            const outside = document.getElementById(progKey + 'PriceOutside');
-            const price = calculateProgramPrice(progKey);
-            if (display) display.textContent = 'Price: RM ' + price.toFixed(2);
-            if (outside) outside.textContent = 'RM ' + price.toFixed(2);
-        }
+        // Price display updates
+        function updateTrialPriceDisplay() { const display = document.getElementById('trialPriceDisplay'); if (!display) return; const price = trialProgramPrice(trialConfig); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('trialPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
+        function updateBasicPriceDisplay() { const display = document.getElementById('basicPriceDisplay'); if (!display) return; const price = basicProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('basicPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
+        function updateAdvancedPriceDisplay() { const display = document.getElementById('advancedPriceDisplay'); if (!display) return; const price = advancedProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('advancedPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
+        function updateUltimatePriceDisplay() { const display = document.getElementById('ultimatePriceDisplay'); if (!display) return; const price = ultimateProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('ultimatePriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
 
-        // Add program to cart
-        function addProgramToCart(progKey) {
-            if (cart.size === 0) orderRef = generateOrderRef();
-            const config = PROGRAM_CONFIGS[progKey];
-            const state = programState[progKey];
-            const price = calculateProgramPrice(progKey);
-            const vp = calculateProgramVP(progKey);
-            const name = buildProgramName(progKey);
-            const product = {
-                sku: progKey.toUpperCase() + '_CUSTOM',
-                name: name,
-                category: 'Programs',
-                vp: vp,
-                earnBase: 0,
-                retail: null,
-                isProgram: true,
-                price: price,
-                programKey: progKey,
-                programConfig: JSON.parse(JSON.stringify(state))
-            };
-            const key = progKey.toUpperCase() + '_CUSTOM_' + Date.now();
-            cart.set(key, { product: product, qty: 1 });
+        // Add to cart functions
+        function addTrialToCart() {
+            const f1Products = trialConfig.skus.map(sku => f1Flavours.find(f => f[0] === sku));
+            const counts = {};
+            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts[name] = (counts[name] || 0) + 1; });
+            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
+            const trialName = `Trial Program (${parts.join(', ')})`;
+            const vp = f1Products.reduce((sum, p) => sum + p[3], 0) + 0.10 + 0.33;
+            const product = { sku: 'TRIAL_CUSTOM', name: trialName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isTrial: true, trialConfig: { skus: trialConfig.skus.slice() } };
+            cart.set('TRIAL_CUSTOM_' + Date.now(), { product: product, qty: 1 });
+            renderCart();
+        }
+        function addBasicToCart() {
+            const aloeProducts = basicConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
+            const teaProducts = basicConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
+            const f1Products = basicConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
+            const counts = {};
+            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
+            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
+            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
+            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
+            const basicName = `Basic Program (${parts.join(', ')})`;
+            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
+            const product = { sku: 'BASIC_CUSTOM', name: basicName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isBasic: true, basicConfig: { aloeSkus: basicConfig.aloeSkus.slice(), teaSkus: basicConfig.teaSkus.slice(), f1Skus: basicConfig.f1Skus.slice() } };
+            cart.set('BASIC_CUSTOM_' + Date.now(), { product: product, qty: 1 });
+            renderCart();
+        }
+        function addAdvancedToCart() {
+            const aloeProducts = advancedConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
+            const teaProducts = advancedConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
+            const f1Products = advancedConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
+            const fibreProducts = advancedConfig.fibreSkus.map(sku => fibreFlavours.find(f => f[0] === sku));
+            const f3Products = advancedConfig.f3Skus.map(sku => f3Flavours.find(f => f[0] === sku));
+            const counts = {};
+            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
+            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
+            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
+            fibreProducts.forEach(p => { const name = p[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); counts['Fibre ' + name] = (counts['Fibre ' + name] || 0) + 1; });
+            f3Products.forEach(p => { const name = p[1].replace('Formula 3 - ', '').replace(' Powder', ''); counts['F3 ' + name] = (counts['F3 ' + name] || 0) + 1; });
+            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
+            const advancedName = `Advanced Program (${parts.join(', ')})`;
+            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + fibreProducts.reduce((sum,p)=>sum+p[3],0) + f3Products.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
+            const product = { sku: 'ADVANCED_CUSTOM', name: advancedName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isAdvanced: true, advancedConfig: { aloeSkus: advancedConfig.aloeSkus.slice(), teaSkus: advancedConfig.teaSkus.slice(), f1Skus: advancedConfig.f1Skus.slice(), fibreSkus: advancedConfig.fibreSkus.slice(), f3Skus: advancedConfig.f3Skus.slice() } };
+            cart.set('ADVANCED_CUSTOM_' + Date.now(), { product: product, qty: 1 });
+            renderCart();
+        }
+        function addUltimateToCart() {
+            const aloeProducts = ultimateConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
+            const teaProducts = ultimateConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
+            const f1Products = ultimateConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
+            const fibreProducts = ultimateConfig.fibreSkus.map(sku => fibreFlavours.find(f => f[0] === sku));
+            const f3Products = ultimateConfig.f3Skus.map(sku => f3Flavours.find(f => f[0] === sku));
+            const multiProducts = ultimateConfig.multiSkus.map(sku => multiFlavours.find(f => f[0] === sku));
+            const fishProducts = ultimateConfig.fishSkus.map(sku => fishFlavours.find(f => f[0] === sku));
+            const immuProducts = ultimateConfig.immuSkus.map(sku => immuFlavours.find(f => f[0] === sku));
+            const counts = {};
+            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
+            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
+            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
+            fibreProducts.forEach(p => { const name = p[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); counts['Fibre ' + name] = (counts['Fibre ' + name] || 0) + 1; });
+            f3Products.forEach(p => { const name = p[1].replace('Formula 3 - ', '').replace(' Powder', ''); counts['F3 ' + name] = (counts['F3 ' + name] || 0) + 1; });
+            multiProducts.forEach(p => { counts['Multi'] = (counts['Multi'] || 0) + 1; });
+            fishProducts.forEach(p => { counts['Fish Oil'] = (counts['Fish Oil'] || 0) + 1; });
+            immuProducts.forEach(p => { counts['ImmuLift'] = (counts['ImmuLift'] || 0) + 1; });
+            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
+            const ultimateName = `Ultimate Program (${parts.join(', ')})`;
+            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + fibreProducts.reduce((sum,p)=>sum+p[3],0) + f3Products.reduce((sum,p)=>sum+p[3],0) + multiProducts.reduce((sum,p)=>sum+p[3],0) + fishProducts.reduce((sum,p)=>sum+p[3],0) + immuProducts.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
+            const product = { sku: 'ULTIMATE_CUSTOM', name: ultimateName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isUltimate: true, ultimateConfig: { aloeSkus: ultimateConfig.aloeSkus.slice(), teaSkus: ultimateConfig.teaSkus.slice(), f1Skus: ultimateConfig.f1Skus.slice(), fibreSkus: ultimateConfig.fibreSkus.slice(), f3Skus: ultimateConfig.f3Skus.slice(), multiSkus: ultimateConfig.multiSkus.slice(), fishSkus: ultimateConfig.fishSkus.slice(), immuSkus: ultimateConfig.immuSkus.slice() } };
+            cart.set('ULTIMATE_CUSTOM_' + Date.now(), { product: product, qty: 1 });
             renderCart();
         }
 
-        // Build program name with full product names
-        function buildProgramName(progKey) {
-            const config = PROGRAM_CONFIGS[progKey];
-            const state = programState[progKey];
-            const counts = {};
-            config.items.forEach(item => {
-                const itemState = state.items.find(s => s.type === item.type);
-                itemState.skus.forEach(sku => {
-                    const prod = item.options.find(o => o[0] === sku);
-                    counts[prod[1]] = (counts[prod[1]] || 0) + 1;
-                });
-            });
-            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
-            return `${config.label} (${parts.join(', ')})`;
+        // Cart rendering
+        function renderCart() {
+            const tier = document.getElementById('discountTier').value;
+            const tbody = document.getElementById('cartBody');
+            let sub = 0, items = 0, vpTotal = 0;
+            tbody.innerHTML = cart.size ? Array.from(cart.entries()).map(([key, item]) => {
+                const p = item.product;
+                let price, total;
+                if (p.isTrial) { price = trialProgramPrice(p.trialConfig); total = price * item.qty; vpTotal += p.vp * item.qty; }
+                else if (p.isBasic) { let sum = 0; p.basicConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.basicConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.basicConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
+                else if (p.isAdvanced) { let sum = 0; p.advancedConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
+                else if (p.isUltimate) { let sum = 0; p.ultimateConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.multiSkus.forEach(sku => { sum += multiFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.fishSkus.forEach(sku => { sum += fishFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.immuSkus.forEach(sku => { sum += immuFlavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
+                else { price = getPrice(p, tier); if (p[2] === 'Programs') price += getProgramDeliveryFee(); total = price * item.qty; vpTotal += p[3] * item.qty; }
+                sub += total;
+                items += item.qty;
+                const displayName = p.isTrial ? p.name : (p.isBasic ? p.name : (p.isAdvanced ? p.name : (p.isUltimate ? p.name : (p[2] === 'Programs' ? p[1] : `${p[0]} - ${p[1]}`))));
+                return `<tr><td class="cart-item-name" title="${displayName}">${displayName}</td><td><div class="qty-control"><button class="qty-btn" data-stock="${key}" data-delta="-1">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" data-stock="${key}" data-delta="1">+</button></div></td><td>RM ${price.toFixed(2)}</td><td style="font-weight:700;">RM ${total.toFixed(2)}</td><td><button class="remove-btn" data-stock="${key}">✕</button></td></tr>`;
+            }).join('') : '<tr><td colspan="5" style="text-align:center;color:#999;padding:40px;">Cart is empty<br>Add products from the list</td></tr>';
+            const fee = deliveryFeeForSummary();
+            document.getElementById('totalItems').textContent = items;
+            document.getElementById('subtotal').textContent = 'RM ' + sub.toFixed(2);
+            document.getElementById('totalVP').textContent = vpTotal.toFixed(2);
+            document.getElementById('totalPrice').textContent = 'RM ' + (sub + fee).toFixed(2);
+            const feeRow = document.getElementById('deliveryFeeRow');
+            const isDelivery = document.querySelector('input[name="delivery"]:checked').value === 'delivery';
+            if (isDelivery) {
+                feeRow.style.display = 'flex';
+                const label = feeRow.querySelector('.label');
+                const value = feeRow.querySelector('.value');
+                if (fee === 0) { label.textContent = 'Delivery Fee (Waived)'; value.textContent = 'RM 0.00'; }
+                else { label.textContent = 'Delivery Fee'; value.textContent = 'RM ' + fee.toFixed(2); }
+            } else { feeRow.style.display = 'none'; }
         }
 
-        // Calculate VP for program
-        function calculateProgramVP(progKey) {
-            const config = PROGRAM_CONFIGS[progKey];
-            const state = programState[progKey];
-            let vp = 0;
-            config.items.forEach(item => {
-                const itemState = state.items.find(s => s.type === item.type);
-                itemState.skus.forEach(sku => {
-                    const prod = item.options.find(o => o[0] === sku);
-                    vp += prod[3];
-                });
-            });
-            config.fixedItems.forEach(sku => {
-                const prod = P.find(p => p[0] === sku);
-                vp += prod[3];
-            });
-            return vp;
-        }
-
-        // Event handlers
+        // Event delegation
         document.getElementById('productList').addEventListener('click', e => {
             if (e.target.classList.contains('add-btn')) {
                 const stock = e.target.dataset.stock;
                 const item = cart.get(stock);
                 if (item) item.qty++;
-                else {
-                    if (cart.size === 0) orderRef = generateOrderRef();
-                    cart.set(stock, { product: P.find(p => p[0] === stock), qty: 1 });
-                }
+                else cart.set(stock, { product: P.find(p => p[0] === stock), qty: 1 });
                 renderCart();
             }
         });
@@ -779,10 +1017,7 @@
             if (e.target.classList.contains('qty-btn')) {
                 const delta = parseInt(e.target.dataset.delta);
                 const item = cart.get(stock);
-                if (item) {
-                    item.qty += delta;
-                    if (item.qty <= 0) cart.delete(stock);
-                }
+                if (item) { item.qty += delta; if (item.qty <= 0) cart.delete(stock); }
                 renderCart();
             } else if (e.target.classList.contains('remove-btn')) {
                 cart.delete(stock);
@@ -790,44 +1025,26 @@
             }
         });
 
-        // Utility functions
-        const clearCart = () => { cart.clear(); orderRef = null; renderCart(); };
-        const clearSearch = () => { document.getElementById('searchInput').value = ''; document.getElementById('searchWrap').classList.remove('has-text'); renderProducts(); document.getElementById('searchInput').focus(); };
+        // Utility
+        const clearCart = () => { cart.clear(); renderCart(); };
         const updateDeliveryUI = () => {
             const isDelivery = document.getElementById('delivery').checked;
             document.getElementById('addressInput').style.display = isDelivery ? 'block' : 'none';
             renderCart();
-            Object.keys(PROGRAM_CONFIGS).forEach(progKey => updatePriceDisplay(progKey));
+            updateTrialPriceDisplay();
+            updateBasicPriceDisplay();
+            updateAdvancedPriceDisplay();
+            updateUltimatePriceDisplay();
         };
-
-        // Print order
-        function printOrder() {
-            if (cart.size === 0) { alert('Cart is empty. Please add products before printing.'); return; }
-            if (!orderRef) orderRef = generateOrderRef();
-            const now = new Date();
-            document.getElementById('printDate').textContent = now.toLocaleDateString('en-MY', { year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('printOrderRef').textContent = orderRef;
-            const name = document.getElementById('customerName').value;
-            const phone = document.getElementById('customerPhone').value;
-            const method = document.querySelector('input[name="delivery"]:checked').value;
-            const addr = document.getElementById('deliveryAddress').value;
-            document.getElementById('printCustomerName').textContent = name || '';
-            document.getElementById('printCustomerPhone').textContent = phone || '';
-            document.getElementById('printDeliveryMethod').textContent = method === 'delivery' ? 'Delivery' : 'Pickup';
-            const row = document.getElementById('printAddressRow');
-            if (method === 'delivery') {
-                document.getElementById('printDeliveryAddress').textContent = addr || '';
-                row.style.display = 'block';
-            } else row.style.display = 'none';
-            document.title = 'Order_' + (name.replace(/\s+/g, '_') || 'NoName') + '_' + now.toISOString().split('T')[0];
-            window.print();
-        }
 
         // Event listeners
         document.querySelectorAll('input[name="delivery"]').forEach(r => r.addEventListener('change', updateDeliveryUI));
         document.getElementById('regionSelector').addEventListener('change', () => {
             renderCart();
-            Object.keys(PROGRAM_CONFIGS).forEach(progKey => updatePriceDisplay(progKey));
+            updateTrialPriceDisplay();
+            updateBasicPriceDisplay();
+            updateAdvancedPriceDisplay();
+            updateUltimatePriceDisplay();
         });
         document.getElementById('searchInput').addEventListener('input', renderProducts);
         document.getElementById('categoryFilter').addEventListener('change', renderProducts);
