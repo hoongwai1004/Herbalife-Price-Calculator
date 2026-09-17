@@ -3,14 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
 <title>Bell Corner · Price Calculator</title>
+
+<!-- Apply saved theme BEFORE CSS loads to avoid a flash -->
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem('bell-corner-theme');
+    var theme = (saved === 'light' || saved === 'dark')
+      ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
 <style>
 /* ============================================================
-   DESIGN TOKENS
+   DESIGN TOKENS — LIGHT (default)
    ============================================================ */
 :root{
-  color-scheme: light dark;
+  color-scheme: light;
 
   --bg:#f2f5f3;
   --surface:#ffffff;
@@ -25,9 +40,17 @@
   --primary:#2f6b52;
   --primary-hover:#255640;
   --primary-soft:#e9f2ed;
+  --on-primary:#ffffff;
 
   --danger:#b84a3f;
   --danger-soft:#fceeec;
+
+  --scrollbar:#cfd8d3;
+  --mark-bg:#fdf0b8;
+  --mark-fg:inherit;
+
+  --header-bg:linear-gradient(135deg,#2b6349 0%,#3d8161 100%);
+  --header-shadow:0 6px 22px rgba(24,66,50,.18);
 
   --radius-lg:18px;
   --radius:12px;
@@ -37,6 +60,41 @@
   --shadow:0 2px 4px rgba(18,40,32,.04), 0 12px 28px rgba(18,40,32,.06);
 
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+/* ============================================================
+   DESIGN TOKENS — DARK (manual toggle)
+   ============================================================ */
+html[data-theme="dark"]{
+  color-scheme: dark;
+
+  --bg:#0e1412;
+  --surface:#161d1a;
+  --surface-alt:#1c2521;
+  --border:#27322d;
+  --border-strong:#374440;
+
+  --text:#e8eeeb;
+  --text-soft:#a4b4ac;
+  --text-mute:#788880;
+
+  --primary:#5cb88b;
+  --primary-hover:#74cda0;
+  --primary-soft:#1d3529;
+  --on-primary:#08241a;
+
+  --danger:#e58579;
+  --danger-soft:#3b1f1c;
+
+  --scrollbar:#33403a;
+  --mark-bg:#5a4a15;
+  --mark-fg:#f5ecc6;
+
+  --header-bg:linear-gradient(135deg,#14392b 0%,#1e553e 100%);
+  --header-shadow:0 6px 22px rgba(0,0,0,.45);
+
+  --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+  --shadow:0 2px 4px rgba(0,0,0,.35), 0 12px 28px rgba(0,0,0,.45);
 }
 
 /* ============================================================
@@ -51,17 +109,18 @@ body{
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  transition:background-color .25s ease, color .25s ease;
 }
 h1,h2,h3,p{margin:0}
 button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 [hidden]{display:none!important}
-mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
+mark{background:var(--mark-bg);color:var(--mark-fg);border-radius:3px;padding:0 1px}
 ::selection{background:var(--primary-soft)}
 
 /* Scrollbars */
-.scroll-area{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#cfd8d3 transparent}
+.scroll-area{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--scrollbar) transparent}
 .scroll-area::-webkit-scrollbar{width:7px}
-.scroll-area::-webkit-scrollbar-thumb{background:#cfd8d3;border-radius:10px}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:10px}
 .scroll-area::-webkit-scrollbar-track{background:transparent}
 
 /* ============================================================
@@ -75,9 +134,10 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   align-items:center;justify-content:space-between;
   padding:18px 22px;margin-bottom:20px;
   border-radius:var(--radius-lg);
-  background:linear-gradient(135deg,#2b6349 0%,#3d8161 100%);
+  background:var(--header-bg);
   color:#fff;
-  box-shadow:0 6px 22px rgba(24,66,50,.18);
+  box-shadow:var(--header-shadow);
+  transition:background .25s ease, box-shadow .25s ease;
 }
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .brand-mark{
@@ -91,7 +151,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 .brand h1{font-size:1.16rem;font-weight:800;letter-spacing:-.3px;line-height:1.2}
 .brand p{font-size:.73rem;opacity:.8;margin-top:2px}
 
-.controls{display:flex;flex-wrap:wrap;gap:10px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .control{
   display:flex;align-items:center;gap:8px;
   padding:6px 7px 6px 14px;
@@ -109,7 +169,26 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   background:#fff;cursor:pointer;outline:none;
   transition:box-shadow .15s;
 }
+html[data-theme="dark"] .control select{background:#e9f2ed;color:#1e5138}
 .control select:focus{box-shadow:0 0 0 3px rgba(255,255,255,.4)}
+
+/* Theme toggle button */
+.theme-toggle{
+  width:38px;height:38px;flex-shrink:0;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;cursor:pointer;
+  transition:background .15s, transform .1s;
+}
+.theme-toggle:hover{background:rgba(255,255,255,.26)}
+.theme-toggle:active{transform:scale(.9)}
+.theme-toggle svg{width:17px;height:17px;display:block}
+.theme-toggle .icon-sun{display:none}
+.theme-toggle .icon-moon{display:block}
+html[data-theme="dark"] .theme-toggle .icon-sun{display:block}
+html[data-theme="dark"] .theme-toggle .icon-moon{display:none}
 
 /* ---------- Layout ---------- */
 .layout{display:grid;gap:20px;grid-template-columns:1fr}
@@ -123,6 +202,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   box-shadow:var(--shadow-sm);
   display:flex;flex-direction:column;
   min-height:0;overflow:hidden;
+  transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 .panel-head{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -152,7 +232,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 }
 .search-field input::placeholder{color:var(--text-mute)}
 .search-field input:focus{
-  background:#fff;border-color:var(--primary);
+  background:var(--surface);border-color:var(--primary);
   box-shadow:0 0 0 3px var(--primary-soft);
 }
 .search-field svg{
@@ -177,7 +257,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   transition:background .15s,border-color .15s,box-shadow .15s;
 }
 .select-field:focus{
-  background:#fff;border-color:var(--primary);
+  background:var(--surface);border-color:var(--primary);
   box-shadow:0 0 0 3px var(--primary-soft);
 }
 
@@ -223,7 +303,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   display:grid;place-items:center;cursor:pointer;
   transition:background .15s,color .15s,transform .1s;
 }
-.icon-btn:hover{background:var(--primary);color:#fff}
+.icon-btn:hover{background:var(--primary);color:var(--on-primary)}
 .icon-btn:active{transform:scale(.92)}
 
 .btn{
@@ -236,10 +316,10 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   flex:1;background:var(--surface-alt);
   border:1px solid var(--border);color:var(--text-soft);
 }
-.btn-ghost:hover{background:#eef2f0;color:var(--text)}
+.btn-ghost:hover{background:var(--border);color:var(--text)}
 .btn-primary{
   width:100%;padding:13px;
-  background:var(--primary);color:#fff;
+  background:var(--primary);color:var(--on-primary);
   font-size:.88rem;
   box-shadow:0 3px 10px rgba(47,107,82,.22);
 }
@@ -249,7 +329,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   background:transparent;border:1px solid var(--border);
   color:var(--danger);font-size:.83rem;
 }
-.btn-danger:hover{background:var(--danger-soft);border-color:#f0d3cf}
+.btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
 
 /* ============================================================
    PROGRAMS PANEL
@@ -258,7 +338,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 .program{
   border:1px solid var(--border);border-radius:var(--radius);
   padding:13px;margin-bottom:10px;background:var(--surface);
-  transition:border-color .15s,box-shadow .15s;
+  transition:border-color .15s,box-shadow .15s,background-color .25s ease;
 }
 .program:hover{border-color:var(--border-strong)}
 .program.is-open{
@@ -350,7 +430,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 }
 .field input::placeholder{color:var(--text-mute)}
 .field input:focus{
-  background:#fff;border-color:var(--primary);
+  background:var(--surface);border-color:var(--primary);
   box-shadow:0 0 0 3px var(--primary-soft);
 }
 
@@ -369,7 +449,7 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 }
 .segmented label:hover{color:var(--text)}
 .segmented input:checked + label{
-  background:var(--primary);color:#fff;
+  background:var(--primary);color:var(--on-primary);
   box-shadow:0 2px 8px rgba(47,107,82,.28);
 }
 
@@ -487,9 +567,10 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
     padding:16px;border-radius:16px;gap:14px;
   }
   .brand{justify-content:center;text-align:center}
-  .controls{width:100%}
+  .controls{width:100%;justify-content:center}
   .control{flex:1;justify-content:space-between}
   .control select{flex:1;max-width:none;margin-left:8px}
+  .theme-toggle{align-self:center}
 
   .layout{gap:16px}
   .panel{border-radius:16px}
@@ -542,60 +623,26 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 }
 
 /* ============================================================
-   DARK MODE — follows the device / system preference
+   DARK — element-specific overrides
+   (tokens are already swapped above; these adjust hardcoded bits)
    ============================================================ */
-@media (prefers-color-scheme: dark){
+html[data-theme="dark"] mark{color:var(--mark-fg)}
+html[data-theme="dark"] ::selection{background:#2a4a3a}
 
-  :root{
-    --bg:#0e1412;
-    --surface:#161d1a;
-    --surface-alt:#1c2521;
-    --border:#27322d;
-    --border-strong:#374440;
+html[data-theme="dark"] .btn-ghost:hover{background:#232e29}
 
-    --text:#e8eeeb;
-    --text-soft:#a4b4ac;
-    --text-mute:#788880;
+html[data-theme="dark"] .icon-btn:hover{color:var(--on-primary)}
 
-    --primary:#5cb88b;
-    --primary-hover:#74cda0;
-    --primary-soft:#1d3529;
+html[data-theme="dark"] .segmented input:checked + label{
+  color:var(--on-primary);
+}
 
-    --danger:#e58579;
-    --danger-soft:#3b1f1c;
+html[data-theme="dark"] .btn-primary{
+  box-shadow:0 3px 10px rgba(0,0,0,.35);
+}
 
-    --shadow-sm:0 1px 2px rgba(0,0,0,.5);
-    --shadow:0 2px 4px rgba(0,0,0,.35), 0 12px 28px rgba(0,0,0,.45);
-  }
-
-  body{background:var(--bg);color:var(--text)}
-  ::selection{background:#2a4a3a}
-
-  mark{background:#5a4a15;color:#f5ecc6}
-
-  /* Header — keep the green identity, just deepen it */
-  .app-header{
-    background:linear-gradient(135deg,#14392b 0%,#1e553e 100%);
-    box-shadow:0 6px 22px rgba(0,0,0,.45);
-  }
-  .control select{background:#e9f2ed;color:#1e5138}
-  .control select:focus{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
-
-  /* Inputs — use the surface colour instead of hard white */
-  .search-field input:focus,
-  .select-field:focus,
-  .field input:focus{background:var(--surface)}
-
-  /* Buttons — light-green primary needs dark text for contrast */
-  .btn-primary{color:#08241a;box-shadow:0 3px 10px rgba(0,0,0,.35)}
-  .btn-ghost:hover{background:#232e29}
-
-  .icon-btn:hover{background:var(--primary);color:#08241a}
-  .segmented input:checked + label{color:#08241a}
-
-  /* Scrollbars */
-  .scroll-area{scrollbar-color:#33403a transparent}
-  .scroll-area::-webkit-scrollbar-thumb{background:#33403a}
+html[data-theme="dark"] .control select:focus{
+  box-shadow:0 0 0 3px rgba(255,255,255,.35);
 }
 
 /* ============================================================
@@ -654,7 +701,6 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
   .cart-table th:nth-child(5),.cart-table td:nth-child(5){display:none}
   .qty-control{display:block}
   .qty-btn,.remove-btn{display:none}
-  .qty-value::before{content:""}
 
   .cart-footer{
     background:#fff;border-top:0;padding:0;
@@ -701,6 +747,21 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
           <option value="d50">50% Off</option>
         </select>
       </label>
+
+      <button class="theme-toggle" id="themeToggle" type="button"
+              aria-label="Toggle dark mode" title="Toggle dark mode">
+        <!-- Sun (shown in dark mode) -->
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <!-- Moon (shown in light mode) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -850,6 +911,32 @@ mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
 
 <script>
 "use strict";
+
+/* ============================================================
+   0. THEME TOGGLE
+   ============================================================ */
+(function initTheme() {
+  const KEY = 'bell-corner-theme';
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  /* Follow system changes only while the user has not made an explicit choice */
+  const onSystemChange = () => {
+    if (!localStorage.getItem(KEY)) {
+      root.setAttribute('data-theme', media.matches ? 'dark' : 'light');
+    }
+  };
+
+  if (media.addEventListener) media.addEventListener('change', onSystemChange);
+  else if (media.addListener) media.addListener(onSystemChange);   /* older Safari */
+
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
 
 /* ============================================================
    1. DATA
@@ -1020,8 +1107,8 @@ PROGRAMS.forEach(prog => {
   });
 });
 
-const openPrograms = new Set();   /* which program cards are expanded */
-const cart = [];                  /* cart items */
+const openPrograms = new Set();
+const cart = [];
 let cartUid = 1;
 
 /* ============================================================
@@ -1046,23 +1133,19 @@ const shortName = (groupKey, sku) => {
 };
 
 const roundUpTo10 = n => Math.ceil(n / 10) * 10;
-
 const regionFee = () => (state.region === 'west' ? 16 : 32);
 
-/** Price of a single product for the active tier. */
 const priceOf = (product, tier) => {
   const value = product.prices[tier];
   return value == null ? product.prices.retail : value;
 };
 
-/** Delivery fee shown in the summary (waived when a program is in the cart). */
 const summaryFee = () => {
   if (state.delivery !== 'delivery') return 0;
   if (cart.some(item => item.kind === 'program')) return 0;
   return regionFee();
 };
 
-/** Highlight search terms inside already-escaped text. */
 function highlight(text, terms) {
   const safe = escapeHtml(text);
   if (!terms.length) return safe;
@@ -1205,7 +1288,6 @@ function renderPrograms() {
       </article>`;
   }).join('');
 
-  /* Fill in the bodies of any expanded programs */
   openPrograms.forEach(id => {
     const card = list.querySelector(`.program[data-program="${id}"]`);
     if (card) renderProgramBody(id, card.querySelector('[data-role="body"]'));
@@ -1298,7 +1380,6 @@ function cartItemVp(item) {
 function renderCart() {
   const wrap = $('cartTableWrap');
 
-  /* ---- Table or empty state ---- */
   if (!cart.length) {
     wrap.innerHTML = `
       <div class="cart-empty">
@@ -1345,7 +1426,6 @@ function renderCart() {
       </table>`;
   }
 
-  /* ---- Totals ---- */
   const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const subtotal  = cart.reduce((sum, item) => sum + cartItemUnitPrice(item) * item.qty, 0);
   const vpTotal   = cart.reduce((sum, item) => sum + cartItemVp(item) * item.qty, 0);
@@ -1384,13 +1464,11 @@ $('programList').addEventListener('click', e => {
   if (!card) return;
   const programId = card.dataset.program;
 
-  /* Add to cart */
   if (e.target.closest('[data-action="add-program"]')) {
     addProgramToCart(programId);
     return;
   }
 
-  /* Expand / collapse */
   if (e.target.closest('[data-action="toggle-program"]')) {
     const body = card.querySelector('[data-role="body"]');
     const btn = card.querySelector('[data-action="toggle-program"]');
@@ -1411,7 +1489,6 @@ $('programList').addEventListener('click', e => {
     return;
   }
 
-  /* Component quantity */
   const qtyBtn = e.target.closest('[data-action="component-qty"]');
   if (qtyBtn) {
     const componentEl = qtyBtn.closest('.component');
