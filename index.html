@@ -1,1059 +1,1562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bell Corner Price Calculator</title>
-    <style>
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f2f5;color:#1a1a2e}
-        .app{max-width:1500px;margin:0 auto;padding:16px}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Bell Corner · Price Calculator</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  color-scheme: light dark;
 
-        /* Header */
-        .header{background:linear-gradient(135deg,#0f3e2e,#1b6b4a);color:#fff;border-radius:18px;padding:22px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px;box-shadow:0 6px 24px rgba(0,0,0,.18);gap:16px}
-        .header-brand h1{font-size:1.45rem;font-weight:800;letter-spacing:-.5px}
-        .header-brand .subtitle{font-size:.78rem;opacity:.85;margin-top:3px}
-        .header-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-        .header-controls .selector{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.16);padding:8px 14px;border-radius:40px;backdrop-filter:blur(4px)}
-        .header-controls label{font-size:.75rem;font-weight:600;opacity:.9;white-space:nowrap}
-        .header-controls select{padding:7px 14px;border-radius:30px;border:none;font-size:.82rem;font-weight:700;background:#fff;color:#0f3e2e;cursor:pointer;outline:none;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s}
-        .header-controls select:hover{transform:scale(1.02)}
+  --bg:#f2f5f3;
+  --surface:#ffffff;
+  --surface-alt:#f7faf8;
+  --border:#e5eae7;
+  --border-strong:#d3ddd7;
 
-        /* Main layout */
-        .main{display:grid;grid-template-columns:380px 1fr;gap:20px}
+  --text:#152520;
+  --text-soft:#5d7169;
+  --text-mute:#8d9c95;
 
-        /* Left column */
-        .left-column{display:flex;flex-direction:column;gap:16px;height:calc(100vh - 130px);min-height:420px}
+  --primary:#2f6b52;
+  --primary-hover:#255640;
+  --primary-soft:#e9f2ed;
 
-        /* Panels */
-        .panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column;transition:box-shadow .2s}
-        .panel:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
-        .panel-title{font-size:.95rem;font-weight:800;margin-bottom:14px;color:#0f3e2e;display:flex;align-items:center;gap:8px;border-bottom:2px solid #f0f4f2;padding-bottom:10px;letter-spacing:-.2px}
+  --danger:#b84a3f;
+  --danger-soft:#fceeec;
 
-        /* Product panel */
-        .product-panel{flex:1;min-height:0;overflow:hidden}
-        .product-list{flex:1;overflow-y:auto;border-radius:14px;padding:4px;scrollbar-width:thin;scrollbar-color:#dde0e3 transparent}
-        .product-list::-webkit-scrollbar{width:6px}
-        .product-list::-webkit-scrollbar-thumb{background:#dde0e3;border-radius:10px}
-        .product-item{display:flex;flex-direction:column;padding:16px;gap:8px;border-radius:14px;border:1px solid #e8ecef;margin-bottom:12px;background:#fff;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.02)}
-        .product-item:hover{border-color:#1b6b4a;box-shadow:0 4px 14px rgba(27,107,74,.08);transform:translateX(3px)}
-        .product-name{font-size:1rem;font-weight:700;line-height:1.4;color:#1a1a2e;display:block;white-space:normal;overflow:visible;word-break:break-word}
-        .product-name .sku{font-size:.78rem;color:#888;font-weight:500;margin-right:4px;font-family:monospace}
-        .product-vp{font-size:.8rem;color:#666;font-weight:500}
-        .product-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;padding-top:10px;border-top:1px solid #f0f4f2}
-        .product-price{font-size:1.2rem;font-weight:800;color:#0f3e2e;letter-spacing:-.3px}
-        .add-btn{background:#1b6b4a;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:1.25rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;box-shadow:0 3px 8px rgba(27,107,74,.25)}
-        .add-btn:hover{background:#0f3e2e;transform:scale(1.1)}
+  --radius-lg:18px;
+  --radius:12px;
+  --radius-sm:9px;
 
-        /* Search & filter */
-        .search-wrap{position:relative;margin-bottom:10px}
-        .search-wrap input{width:100%;padding:10px 38px 10px 14px;border:2px solid #eef0f2;border-radius:12px;font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s;background:#fafbfe}
-        .search-wrap input:focus{border-color:#1b6b4a;box-shadow:0 0 0 3px rgba(27,107,74,.1);background:#fff}
-        .search-wrap .icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#999;font-size:.95rem;pointer-events:none}
-        .search-wrap .clear-search{position:absolute;right:40px;top:50%;transform:translateY(-50%);color:#999;font-size:1rem;cursor:pointer;display:none;padding:2px 4px}
-        .search-wrap .clear-search:hover{color:#d44}
-        .search-wrap.has-text .clear-search{display:block}
-        .search-wrap.has-text .icon{display:none}
-        mark{background:#ffe97a;color:inherit;padding:0;border-radius:2px}
-        .category-filter{margin-bottom:12px}
-        .category-filter select{width:100%;padding:10px 12px;border:2px solid #eef0f2;border-radius:12px;font-size:.84rem;outline:none;background:#fafbfe;cursor:pointer}
-        .category-filter select:focus{border-color:#1b6b4a}
+  --shadow-sm:0 1px 2px rgba(18,40,32,.05);
+  --shadow:0 2px 4px rgba(18,40,32,.04), 0 12px 28px rgba(18,40,32,.06);
 
-        /* Programs panel */
-        .program-panel{flex-shrink:0;max-height:35%;overflow-y:auto}
-        .program-card{display:flex;flex-direction:column;padding:16px;gap:8px;border-radius:14px;border:1px solid #e8ecef;margin-bottom:12px;background:#fff;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.02)}
-        .program-card:hover{border-color:#1b6b4a;box-shadow:0 4px 14px rgba(27,107,74,.08);transform:translateX(3px)}
-        .program-card .program-title{font-size:1rem;font-weight:700;line-height:1.4;color:#1a1a2e;display:block;white-space:normal;word-break:break-word}
-        .program-card .program-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;padding-top:10px;border-top:1px solid #f0f4f2}
-        .program-card .program-price{font-size:1.2rem;font-weight:800;color:#0f3e2e;letter-spacing:-.3px}
-        .program-card .program-actions{display:flex;align-items:center;gap:6px}
-        .program-card .configure-btn{background:#f0f2f5;color:#0f3e2e;border:1px solid #dde0e4;border-radius:20px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
-        .program-card .configure-btn:hover{background:#e0e4e8;transform:scale(1.05)}
-        .program-card .add-btn{width:40px;height:40px;font-size:1.25rem}
-        .program-config-content{display:none;margin-top:12px;border-top:1px solid #f0f4f2;padding-top:12px}
-        .program-config-content.show{display:block}
-        .trial-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-        .trial-row label{font-size:.8rem;font-weight:600;color:#555;min-width:80px}
-        .trial-row select,.trial-row input{flex:1;padding:6px 8px;border:1px solid #ddd;border-radius:8px;font-size:.85rem;outline:none;background:#fff}
-        .trial-row input{max-width:60px}
-        .stepper{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:2px}
-        .stepper button{background:#f0f2f5;border:none;width:28px;height:28px;border-radius:6px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;color:#333}
-        .stepper button:hover{background:#dde0e4}
-        .stepper span{font-weight:800;min-width:24px;text-align:center;font-size:.9rem}
-        .trial-add{width:100%;margin-top:8px;background:#1b6b4a;color:#fff;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer}
-        .trial-price-display{background:#eef7f2;border:1px solid #cde5d8;border-radius:8px;padding:10px;margin-top:10px;text-align:center;font-weight:700;color:#0f3e2e}
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
 
-        /* Cart panel */
-        .cart-panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column;height:calc(100vh - 130px);min-height:420px;transition:box-shadow .2s}
-        .cart-panel:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+h1,h2,h3,p{margin:0}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+[hidden]{display:none!important}
+mark{background:#fdf0b8;color:inherit;border-radius:3px;padding:0 1px}
+::selection{background:var(--primary-soft)}
 
-        .customer-info,.delivery-info{margin-bottom:12px;padding:10px;background:#fafbfc;border-radius:10px;border:1px solid #eef0f2}
-        .customer-info label,.delivery-info label{display:block;font-size:.78rem;font-weight:700;color:#555;margin-bottom:4px}
-        .customer-info input,.delivery-info select,.delivery-info input[type="text"]{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:.85rem;outline:none;background:#fff;margin-bottom:8px}
-        .customer-info input:focus,.delivery-info select:focus,.delivery-info input[type="text"]:focus{border-color:#1b6b4a}
-        .segmented{display:flex;background:#eef0f2;border-radius:30px;padding:4px;margin-bottom:10px;gap:4px}
-        .segmented label{flex:1;text-align:center;padding:8px 12px;font-size:.82rem;font-weight:700;border-radius:30px;cursor:pointer;transition:all .25s;color:#666;margin:0;white-space:nowrap}
-        .segmented input[type="radio"]{display:none}
-        .segmented label:hover{background:rgba(255,255,255,.5);color:#333}
-        .segmented input[type="radio"]:checked+label{background:#1b6b4a;color:#fff;box-shadow:0 2px 6px rgba(27,107,74,.3)}
-        .delivery-info .region-select,.delivery-info .address-input{margin-top:8px}
+/* Scrollbars */
+.scroll-area{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#cfd8d3 transparent}
+.scroll-area::-webkit-scrollbar{width:7px}
+.scroll-area::-webkit-scrollbar-thumb{background:#cfd8d3;border-radius:10px}
+.scroll-area::-webkit-scrollbar-track{background:transparent}
 
-        /* Cart table */
-        .cart-table{flex:1;overflow-y:auto;border-radius:14px;border:1px solid #f0f2f4;scrollbar-width:thin;scrollbar-color:#dde0e3 transparent}
-        .cart-table::-webkit-scrollbar{width:6px}
-        .cart-table::-webkit-scrollbar-thumb{background:#dde0e3;border-radius:10px}
-        .cart-table table{width:100%;border-collapse:collapse}
-        .cart-table th{background:#f8f9fb;padding:12px 8px;font-size:.72rem;font-weight:800;text-transform:uppercase;color:#555;text-align:center;border-bottom:2px solid #e8ecef;position:sticky;top:0;z-index:2}
-        .cart-table td{padding:10px 6px;text-align:center;font-size:.85rem;border-bottom:1px solid #f8f8f8;vertical-align:middle}
-        .cart-table tr:hover{background:#fafbfc}
-        .cart-item-name{text-align:left!important;font-weight:600;max-width:220px;padding-left:12px!important;display:block;white-space:normal;overflow:visible;word-break:break-word}
-        .qty-control{display:flex;align-items:center;gap:3px;justify-content:center}
-        .qty-btn,.remove-btn{background:#f0f2f5;border:none;width:28px;height:28px;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .1s;color:#333}
-        .qty-btn:hover{background:#dde0e4;transform:scale(1.1)}
-        .remove-btn{background:#fee;color:#d44}
-        .remove-btn:hover{background:#fdd;transform:scale(1.1)}
-        .qty-val{font-weight:800;min-width:26px;text-align:center;font-size:.95rem}
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app{max-width:1480px;margin:0 auto;padding:20px}
 
-        /* Summary */
-        .summary{background:#f8f9fb;border-radius:14px;padding:14px 18px;margin-top:14px;border:1px solid #f0f2f4}
-        .summary-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.86rem;border-bottom:1px solid #e8ecef}
-        .summary-row:last-child{border-bottom:none}
-        .summary-row .label{color:#666}
-        .summary-row .value{font-weight:700;color:#1a1a2e}
-        .summary-row.total{font-size:1rem;border-top:2px solid #ddd;padding-top:10px;margin-top:6px}
-        .summary-row.total .value{color:#0f3e2e;font-size:1.2rem}
-        .print-hide{display:flex}
+/* ---------- Header ---------- */
+.app-header{
+  display:flex;flex-wrap:wrap;gap:16px;
+  align-items:center;justify-content:space-between;
+  padding:18px 22px;margin-bottom:20px;
+  border-radius:var(--radius-lg);
+  background:linear-gradient(135deg,#2b6349 0%,#3d8161 100%);
+  color:#fff;
+  box-shadow:0 6px 22px rgba(24,66,50,.18);
+}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;flex-shrink:0;
+  display:grid;place-items:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.24);
+  font-weight:800;font-size:.9rem;letter-spacing:.5px;
+}
+.brand h1{font-size:1.16rem;font-weight:800;letter-spacing:-.3px;line-height:1.2}
+.brand p{font-size:.73rem;opacity:.8;margin-top:2px}
 
-        /* Buttons */
-        .print-btn,.clear-btn{width:100%;padding:10px;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;margin-top:10px;transition:background .2s,transform .1s}
-        .print-btn{background:#1b6b4a;color:#fff}
-        .print-btn:hover{background:#0f3e2e;transform:scale(1.01)}
-        .clear-btn{background:#fee;color:#d44;border:1px solid #fdd}
-        .clear-btn:hover{background:#fdd;transform:scale(1.01)}
+.controls{display:flex;flex-wrap:wrap;gap:10px}
+.control{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 7px 6px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.2);
+}
+.control span{
+  font-size:.68rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;opacity:.85;white-space:nowrap;
+}
+.control select{
+  border:0;border-radius:999px;padding:7px 12px;
+  font-size:.8rem;font-weight:700;color:var(--primary);
+  background:#fff;cursor:pointer;outline:none;
+  transition:box-shadow .15s;
+}
+.control select:focus{box-shadow:0 0 0 3px rgba(255,255,255,.4)}
 
-        /* Print header/footer */
-        .print-header,.print-footer{display:none}
+/* ---------- Layout ---------- */
+.layout{display:grid;gap:20px;grid-template-columns:1fr}
+.sidebar{display:flex;flex-direction:column;gap:20px;min-width:0}
 
-        /* Print styles */
-        @media print{
-            body{background:#fff;color:#000;padding:0}
-            .app{max-width:100%;padding:0}
-            .header,.left-column,.clear-btn,.print-btn{display:none!important}
-            .main{display:block;padding:0}
-            .cart-panel{height:auto;min-height:auto;border:none;box-shadow:none;padding:0;width:100%}
-            .panel-title{display:none}
-            .print-header{display:block;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:20px;text-align:center}
-            .print-header h2{font-size:1.4rem;margin-bottom:4px;letter-spacing:1px}
-            .print-header p{font-size:.9rem;margin:2px 0}
-            .customer-info,.delivery-info{display:none!important}
-            .print-order-details{display:block!important;border:2px solid #000;padding:12px 16px;margin-bottom:20px;border-radius:6px}
-            .print-order-details p{margin:4px 0;font-size:.9rem;line-height:1.4}
-            .print-order-details .detail-label{font-weight:700;margin-right:8px}
-            .cart-table{overflow:visible;border:none}
-            .cart-table table{width:100%;border-collapse:collapse;table-layout:fixed}
-            .cart-table th,.cart-table td{padding:6px 4px;text-align:center;font-size:.85rem;border-bottom:1px solid #ccc!important;color:#000!important;word-break:break-word;vertical-align:middle}
-            .cart-table tr{border-bottom:1px solid #ccc!important}
-            .cart-table thead th{background:#eee!important;border-bottom:2px solid #000!important;position:static;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
-            .cart-table th:nth-child(1),.cart-table td:nth-child(1){width:55%;text-align:left;padding-left:10px;}
-            .cart-table th:nth-child(2),.cart-table td:nth-child(2){width:15%;}
-            .cart-table th:nth-child(3),.cart-table td:nth-child(3){width:15%;}
-            .cart-table th:nth-child(4),.cart-table td:nth-child(4){width:15%;}
-            .cart-table th:nth-child(5),.cart-table td:nth-child(5){display:none;}
-            .cart-item-name{white-space:normal;word-break:break-word;display:table-cell!important;padding-left:10px!important;}
-            .qty-control,.remove-btn{border:none;background:none}
-            .qty-btn,.remove-btn{display:none}
-            .qty-val{font-size:.9rem}
-            .summary{background:#fff;border:2px solid #000;border-radius:8px;margin-top:20px;padding:12px 16px}
-            .summary-row{border-bottom:1px solid #ccc;font-size:.85rem}
-            .summary-row .value{color:#000}
-            .summary-row.total{border-top:2px solid #000;font-size:.95rem}
-            .summary-row.total .value{color:#000}
-            .print-footer{display:block;text-align:center;margin-top:30px;font-size:.9rem}
-            .print-hide{display:none!important}
-        }
+/* ---------- Panels ---------- */
+.panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;
+  min-height:0;overflow:hidden;
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:15px 18px 12px;
+}
+.panel-head h2{
+  font-size:.74rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-soft);
+}
+.pill{
+  font-size:.7rem;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:var(--primary-soft);color:var(--primary);
+}
 
-        /* Responsive */
-        @media (max-width:1024px){
-            .main{grid-template-columns:300px 1fr;gap:16px}
-            .left-column,.cart-panel{height:calc(100vh - 110px)}
-            .header{padding:18px 22px}
-        }
-        @media (max-width:700px){
-            body{padding:10px}
-            .app{padding:8px}
-            .header{flex-direction:column;align-items:stretch;padding:16px 18px;gap:14px;border-radius:14px}
-            .header-brand h1{font-size:1.2rem;text-align:center}
-            .header-brand .subtitle{text-align:center;font-size:.7rem}
-            .header-controls{width:100%;justify-content:center}
-            .header-controls .selector{flex:1}
-            .header-controls select{flex:1;font-size:.78rem;padding:8px 8px}
-            .main{grid-template-columns:1fr;gap:16px}
-            .left-column{height:auto;min-height:320px}
-            .product-panel{max-height:55vh;min-height:320px}
-            .cart-panel{height:auto;max-height:none;min-height:300px}
-            .product-list{max-height:45vh}
-            .product-item{padding:14px;gap:6px;margin-bottom:10px}
-            .product-name{font-size:.95rem}
-            .product-vp{font-size:.78rem}
-            .product-price{font-size:1.1rem}
-            .add-btn{width:38px;height:38px;font-size:1.15rem}
-            .program-panel{max-height:none;overflow:visible}
-            .cart-table thead{display:none}
-            .cart-table table{display:block}
-            .cart-table tbody{display:block}
-            .cart-table tr{display:flex;flex-wrap:wrap;align-items:center;border:1px solid #e8ecef;border-radius:12px;margin-bottom:10px;padding:12px;background:#fafbfc}
-            .cart-table td{display:block;border:none;padding:4px 6px;font-size:.88rem}
-            .cart-table .cart-item-name{flex:1 0 100%;font-weight:700;margin-bottom:8px;text-align:left;font-size:.9rem;padding-left:0!important;max-width:none;display:block;white-space:normal;overflow:visible;word-break:break-word}
-            .cart-table td:nth-child(2){order:1}
-            .cart-table td:nth-child(3){display:none}
-            .cart-table td:nth-child(4){order:2;margin-left:auto;font-weight:800;font-size:.95rem;padding-right:4px}
-            .cart-table td:nth-child(5){order:3;margin-left:6px}
-            .qty-btn,.remove-btn{width:36px;height:36px;font-size:1.1rem}
-            .qty-val{font-size:1.05rem;min-width:30px}
-            .summary{padding:12px;margin-top:12px}
-            .summary-row{font-size:.85rem}
-            .print-btn,.clear-btn{padding:14px;font-size:.95rem}
-        }
-        @media (max-width:380px){
-            .header-brand h1{font-size:1.05rem}
-            .discount-selector label{font-size:.68rem}
-            .discount-selector select{font-size:.72rem}
-            .product-name{font-size:.85rem}
-            .product-price{font-size:.95rem}
-            .add-btn{width:34px;height:34px;font-size:1rem}
-            .summary-row{font-size:.78rem}
-        }
-    </style>
+/* ============================================================
+   PRODUCTS PANEL
+   ============================================================ */
+.toolbar{padding:0 16px 12px;display:flex;flex-direction:column;gap:8px}
+
+.search-field{position:relative}
+.search-field input{
+  width:100%;padding:10px 36px 10px 36px;
+  border:1px solid var(--border);border-radius:10px;
+  font-size:.85rem;background:var(--surface-alt);outline:none;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.search-field input::placeholder{color:var(--text-mute)}
+.search-field input:focus{
+  background:#fff;border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+.search-field svg{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--text-mute);pointer-events:none;
+}
+.search-clear{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;border:0;border-radius:50%;
+  background:transparent;color:var(--text-mute);cursor:pointer;
+  display:none;place-items:center;font-size:.85rem;line-height:1;
+  transition:background .15s,color .15s;
+}
+.search-clear:hover{background:var(--border);color:var(--text)}
+.search-field.has-value .search-clear{display:grid}
+
+.select-field{
+  width:100%;padding:9px 12px;
+  border:1px solid var(--border);border-radius:10px;
+  font-size:.82rem;background:var(--surface-alt);
+  outline:none;cursor:pointer;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.select-field:focus{
+  background:#fff;border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+
+.product-list{padding:4px 10px 12px}
+
+.product{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 10px;border-radius:var(--radius);
+  border:1px solid transparent;
+  transition:background .15s,border-color .15s;
+}
+.product:hover{background:var(--surface-alt);border-color:var(--border)}
+.product-info{flex:1;min-width:0}
+.product-name{font-size:.86rem;font-weight:600;line-height:1.35;word-break:break-word}
+.product-meta{
+  font-size:.71rem;color:var(--text-mute);margin-top:3px;
+  display:flex;align-items:center;gap:6px;
+  font-variant-numeric:tabular-nums;
+}
+.product-meta .sku{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:var(--surface-alt);border:1px solid var(--border);
+  padding:1px 5px;border-radius:5px;font-size:.68rem;
+}
+.product-buy{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.product-price{
+  font-size:.88rem;font-weight:700;color:var(--primary);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.empty-note{
+  padding:36px 20px;text-align:center;
+  font-size:.84rem;color:var(--text-mute);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.icon-btn{
+  width:32px;height:32px;flex-shrink:0;
+  border:0;border-radius:50%;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:1.15rem;font-weight:600;line-height:1;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background .15s,color .15s,transform .1s;
+}
+.icon-btn:hover{background:var(--primary);color:#fff}
+.icon-btn:active{transform:scale(.92)}
+
+.btn{
+  border:0;border-radius:10px;padding:9px 14px;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s,transform .1s;
+}
+.btn:active{transform:scale(.98)}
+.btn-ghost{
+  flex:1;background:var(--surface-alt);
+  border:1px solid var(--border);color:var(--text-soft);
+}
+.btn-ghost:hover{background:#eef2f0;color:var(--text)}
+.btn-primary{
+  width:100%;padding:13px;
+  background:var(--primary);color:#fff;
+  font-size:.88rem;
+  box-shadow:0 3px 10px rgba(47,107,82,.22);
+}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-danger{
+  width:100%;margin-top:9px;padding:11px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--danger);font-size:.83rem;
+}
+.btn-danger:hover{background:var(--danger-soft);border-color:#f0d3cf}
+
+/* ============================================================
+   PROGRAMS PANEL
+   ============================================================ */
+.program-list{padding:4px 10px 14px}
+.program{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:13px;margin-bottom:10px;background:var(--surface);
+  transition:border-color .15s,box-shadow .15s;
+}
+.program:hover{border-color:var(--border-strong)}
+.program.is-open{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+.program-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.program-name{font-size:.9rem;font-weight:700}
+.program-blurb{font-size:.72rem;color:var(--text-mute);margin-top:2px}
+.program-price{
+  font-size:.92rem;font-weight:700;color:var(--primary);
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.program-actions{display:flex;align-items:center;gap:8px;margin-top:12px}
+.program-body{
+  margin-top:14px;padding-top:14px;
+  border-top:1px solid var(--border);
+}
+
+.component{margin-bottom:14px}
+.component:last-child{margin-bottom:0}
+.component-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:8px;
+}
+.component-label{
+  font-size:.72rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--text-mute);
+}
+
+.stepper{
+  display:flex;align-items:center;gap:2px;
+  padding:2px;border-radius:999px;
+  background:var(--surface-alt);border:1px solid var(--border);
+}
+.stepper button{
+  width:25px;height:25px;border:0;border-radius:50%;
+  background:transparent;color:var(--text-soft);
+  font-size:.95rem;font-weight:700;line-height:1;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.stepper button:hover{background:var(--primary-soft);color:var(--primary)}
+.stepper span{
+  min-width:22px;text-align:center;
+  font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums;
+}
+
+.flavour-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.flavour-index{
+  width:14px;flex-shrink:0;text-align:right;
+  font-size:.68rem;font-weight:700;color:var(--text-mute);
+}
+.flavour-row select{
+  flex:1;min-width:0;
+  padding:7px 10px;border:1px solid var(--border);
+  border-radius:8px;font-size:.79rem;
+  background:var(--surface);outline:none;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+}
+.flavour-row select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+
+/* ============================================================
+   CART PANEL
+   ============================================================ */
+.cart{display:flex;flex-direction:column;min-height:0}
+.cart-scroll{flex:1;min-height:0;padding:0 18px 18px}
+
+.form-section{margin-bottom:16px}
+.section-title{
+  font-size:.68rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-mute);
+  margin-bottom:8px;
+}
+.field-grid{display:grid;gap:10px}
+.field{display:block}
+.field span{
+  display:block;font-size:.74rem;font-weight:600;
+  color:var(--text-soft);margin-bottom:5px;
+}
+.field input{
+  width:100%;padding:9px 12px;
+  border:1px solid var(--border);border-radius:10px;
+  font-size:.84rem;background:var(--surface-alt);outline:none;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.field input::placeholder{color:var(--text-mute)}
+.field input:focus{
+  background:#fff;border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+
+.segmented{
+  display:flex;gap:4px;padding:4px;margin-bottom:10px;
+  background:var(--surface-alt);border:1px solid var(--border);
+  border-radius:999px;
+}
+.segmented input{display:none}
+.segmented label{
+  flex:1;text-align:center;padding:8px 10px;
+  font-size:.8rem;font-weight:700;color:var(--text-soft);
+  border-radius:999px;cursor:pointer;
+  transition:background .2s,color .2s,box-shadow .2s;
+  user-select:none;
+}
+.segmented label:hover{color:var(--text)}
+.segmented input:checked + label{
+  background:var(--primary);color:#fff;
+  box-shadow:0 2px 8px rgba(47,107,82,.28);
+}
+
+/* ---------- Cart table ---------- */
+.cart-table{width:100%;border-collapse:collapse}
+.cart-table thead th{
+  position:sticky;top:0;z-index:2;
+  background:var(--surface);
+  padding:8px 8px 10px;
+  font-size:.66rem;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text-mute);
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.cart-table thead th:first-child{text-align:left;padding-left:2px}
+.cart-table thead th:nth-child(3),
+.cart-table thead th:nth-child(4){text-align:right}
+.cart-table td{
+  padding:12px 8px;border-bottom:1px solid var(--border);
+  font-size:.83rem;vertical-align:middle;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.cart-table tbody tr:last-child td{border-bottom:0}
+.cart-table tbody tr:hover{background:var(--surface-alt)}
+.cell-name{
+  text-align:left!important;padding-left:2px!important;
+  font-weight:600;line-height:1.35;word-break:break-word;
+  min-width:140px;
+}
+.cell-price,.cell-total{text-align:right!important;white-space:nowrap}
+.cell-total{font-weight:700}
+.cell-remove{width:38px}
+
+.qty-control{display:inline-flex;align-items:center;gap:4px}
+.qty-btn,.remove-btn{
+  width:26px;height:26px;border:0;border-radius:8px;
+  background:var(--surface-alt);color:var(--text-soft);
+  font-size:.85rem;font-weight:700;line-height:1;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background .15s,color .15s,transform .1s;
+}
+.qty-btn:hover{background:var(--primary-soft);color:var(--primary)}
+.remove-btn{background:transparent;color:var(--text-mute);font-size:.75rem}
+.remove-btn:hover{background:var(--danger-soft);color:var(--danger)}
+.qty-btn:active,.remove-btn:active{transform:scale(.9)}
+.qty-value{
+  min-width:24px;text-align:center;
+  font-weight:700;font-size:.86rem;
+}
+
+.cart-empty{
+  padding:48px 20px;text-align:center;
+  font-size:.84rem;color:var(--text-mute);
+}
+.cart-empty strong{
+  display:block;font-size:.92rem;color:var(--text-soft);
+  margin-bottom:4px;font-weight:600;
+}
+
+/* ---------- Cart footer ---------- */
+.cart-footer{
+  padding:16px 18px;
+  border-top:1px solid var(--border);
+  background:var(--surface-alt);
+}
+.summary-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;font-size:.83rem;
+}
+.summary-row .label{color:var(--text-soft)}
+.summary-row .value{
+  font-weight:700;font-variant-numeric:tabular-nums;
+}
+.summary-row.total{
+  margin-top:8px;padding-top:12px;
+  border-top:1px solid var(--border-strong);
+  font-size:.9rem;
+}
+.summary-row.total .value{
+  font-size:1.18rem;color:var(--primary);letter-spacing:-.3px;
+}
+
+/* ============================================================
+   PRINT-ONLY ELEMENTS
+   ============================================================ */
+.print-only{display:none}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width:1000px){
+  .layout{
+    grid-template-columns:390px minmax(0,1fr);
+    height:calc(100vh - 128px);
+    min-height:560px;
+  }
+  .sidebar{min-height:0}
+  .panel-products{flex:1 1 auto;min-height:0}
+  .panel-products .product-list{flex:1;min-height:0}
+  .panel-programs{flex:0 0 auto;max-height:44%;min-height:0}
+  .panel-programs .program-list{flex:1;min-height:0}
+  .cart{min-height:0}
+}
+
+@media (max-width:999px){
+  .panel-products .product-list{max-height:58vh}
+  .panel-programs .program-list{max-height:50vh}
+  .cart-scroll{max-height:none}
+}
+
+@media (max-width:720px){
+  .app{padding:12px}
+  .app-header{
+    flex-direction:column;align-items:stretch;
+    padding:16px;border-radius:16px;gap:14px;
+  }
+  .brand{justify-content:center;text-align:center}
+  .controls{width:100%}
+  .control{flex:1;justify-content:space-between}
+  .control select{flex:1;max-width:none;margin-left:8px}
+
+  .layout{gap:16px}
+  .panel{border-radius:16px}
+
+  .field-grid{grid-template-columns:1fr}
+
+  /* Cart table → cards */
+  .cart-table thead{display:none}
+  .cart-table,
+  .cart-table tbody,
+  .cart-table tr,
+  .cart-table td{display:block;width:100%}
+  .cart-table tr{
+    position:relative;
+    display:grid;grid-template-columns:1fr auto;
+    gap:8px 10px;
+    padding:14px;margin-bottom:10px;
+    border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--surface-alt);
+  }
+  .cart-table tr:hover{background:var(--surface-alt)}
+  .cart-table td{
+    border:0;padding:0;text-align:left!important;
+  }
+  .cell-name{
+    grid-column:1 / -1;
+    padding-right:34px!important;
+    font-size:.88rem;
+  }
+  .cell-qty{grid-column:1;align-self:center}
+  .cell-total{
+    grid-column:2;text-align:right!important;
+    align-self:center;font-size:.92rem;
+  }
+  .cell-price{display:none}
+  .cell-remove{
+    position:absolute;top:10px;right:10px;width:auto;
+  }
+  .qty-btn,.remove-btn{width:32px;height:32px}
+
+  .cart-footer{padding:14px 16px}
+  .btn-primary{padding:14px}
+}
+
+@media (max-width:380px){
+  .brand h1{font-size:1.02rem}
+  .brand p{font-size:.68rem}
+  .product-price{font-size:.82rem}
+  .icon-btn{width:30px;height:30px;font-size:1.05rem}
+}
+
+/* ============================================================
+   DARK MODE — follows the device / system preference
+   ============================================================ */
+@media (prefers-color-scheme: dark){
+
+  :root{
+    --bg:#0e1412;
+    --surface:#161d1a;
+    --surface-alt:#1c2521;
+    --border:#27322d;
+    --border-strong:#374440;
+
+    --text:#e8eeeb;
+    --text-soft:#a4b4ac;
+    --text-mute:#788880;
+
+    --primary:#5cb88b;
+    --primary-hover:#74cda0;
+    --primary-soft:#1d3529;
+
+    --danger:#e58579;
+    --danger-soft:#3b1f1c;
+
+    --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+    --shadow:0 2px 4px rgba(0,0,0,.35), 0 12px 28px rgba(0,0,0,.45);
+  }
+
+  body{background:var(--bg);color:var(--text)}
+  ::selection{background:#2a4a3a}
+
+  mark{background:#5a4a15;color:#f5ecc6}
+
+  /* Header — keep the green identity, just deepen it */
+  .app-header{
+    background:linear-gradient(135deg,#14392b 0%,#1e553e 100%);
+    box-shadow:0 6px 22px rgba(0,0,0,.45);
+  }
+  .control select{background:#e9f2ed;color:#1e5138}
+  .control select:focus{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+
+  /* Inputs — use the surface colour instead of hard white */
+  .search-field input:focus,
+  .select-field:focus,
+  .field input:focus{background:var(--surface)}
+
+  /* Buttons — light-green primary needs dark text for contrast */
+  .btn-primary{color:#08241a;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+  .btn-ghost:hover{background:#232e29}
+
+  .icon-btn:hover{background:var(--primary);color:#08241a}
+  .segmented input:checked + label{color:#08241a}
+
+  /* Scrollbars */
+  .scroll-area{scrollbar-color:#33403a transparent}
+  .scroll-area::-webkit-scrollbar-thumb{background:#33403a}
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;color:#000}
+  .app{max-width:none;padding:0}
+  .app-header,
+  .sidebar,
+  .cart-footer .btn,
+  .form-section,
+  .no-print{display:none!important}
+
+  .layout{display:block;height:auto!important;min-height:0!important}
+  .cart{
+    border:0;box-shadow:none;border-radius:0;
+    height:auto!important;overflow:visible;
+  }
+  .panel-head{display:none}
+  .cart-scroll{padding:0;overflow:visible!important}
+
+  .print-only{display:block}
+  .print-header{
+    text-align:center;
+    padding-bottom:14px;margin-bottom:18px;
+    border-bottom:2px solid #000;
+  }
+  .print-header h2{font-size:1.35rem;letter-spacing:1px}
+  .print-header p{font-size:.85rem;margin-top:3px}
+
+  .print-details{
+    border:1.5px solid #000;border-radius:6px;
+    padding:12px 16px;margin-bottom:18px;
+    font-size:.85rem;line-height:1.6;
+  }
+  .print-details .detail-label{font-weight:700;margin-right:6px}
+
+  .cart-table{table-layout:fixed}
+  .cart-table thead th{
+    position:static;background:#eee!important;
+    border-bottom:1.5px solid #000!important;
+    color:#000;font-size:.72rem;
+  }
+  .cart-table th,.cart-table td{
+    padding:6px 5px;font-size:.82rem;
+    border-bottom:1px solid #bbb;
+    color:#000!important;
+  }
+  .cart-table tbody tr:hover{background:transparent}
+  .cart-table th:nth-child(1),.cart-table td:nth-child(1){width:52%;text-align:left}
+  .cart-table th:nth-child(2),.cart-table td:nth-child(2){width:16%}
+  .cart-table th:nth-child(3),.cart-table td:nth-child(3){width:16%}
+  .cart-table th:nth-child(4),.cart-table td:nth-child(4){width:16%}
+  .cart-table th:nth-child(5),.cart-table td:nth-child(5){display:none}
+  .qty-control{display:block}
+  .qty-btn,.remove-btn{display:none}
+  .qty-value::before{content:""}
+
+  .cart-footer{
+    background:#fff;border-top:0;padding:0;
+  }
+  .cart-footer .summary{
+    border:1.5px solid #000;border-radius:8px;
+    padding:12px 16px;margin-top:18px;
+  }
+  .summary-row{border-bottom:1px solid #ccc;font-size:.84rem}
+  .summary-row.total{border-top:1.5px solid #000;font-size:.92rem}
+  .summary-row .value,.summary-row.total .value{color:#000}
+}
+</style>
 </head>
 <body>
-    <div class="app">
-        <div class="header">
-            <div class="header-brand">
-                <h1>Bell Corner</h1>
-                <div class="subtitle">Price Calculator · Updated May 19, 2026</div>
-            </div>
-            <div class="header-controls">
-                <div class="selector">
-                    <label>Region:</label>
-                    <select id="regionSelector">
-                        <option value="west">West Malaysia</option>
-                        <option value="east">East Malaysia</option>
-                    </select>
-                </div>
-                <div class="selector">
-                    <label>Price Tier:</label>
-                    <select id="discountTier">
-                        <option value="retail">Retail</option>
-                        <option value="0.25">25% Off</option>
-                        <option value="0.35">35% Off</option>
-                        <option value="0.42">42% Off</option>
-                        <option value="0.5">50% Off</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="main">
-            <!-- Left Column -->
-            <div class="left-column">
-                <div class="panel product-panel">
-                    <div class="panel-title">📦 Products</div>
-                    <div class="search-wrap" id="searchWrap">
-                        <input type="text" id="searchInput" placeholder="Search by name, SKU, or category...">
-                        <span class="clear-search" id="clearSearch" onclick="clearSearch()">×</span>
-                        <span class="icon">🔍</span>
-                    </div>
-                    <div class="category-filter">
-                        <select id="categoryFilter">
-                            <option value="all">All Categories</option>
-                            <option value="Core Nutrition">Core Nutrition</option>
-                            <option value="Energy & Fitness">Energy & Fitness</option>
-                            <option value="Digestive Health">Digestive Health</option>
-                            <option value="Heart Health">Heart Health</option>
-                            <option value="General Health">General Health</option>
-                            <option value="Joint Health">Joint Health</option>
-                            <option value="Youthful Vitality">Youthful Vitality</option>
-                            <option value="Healthy Snacks">Healthy Snacks</option>
-                            <option value="SKIN Care">SKIN Care</option>
-                            <option value="Facial Mask">Facial Mask</option>
-                            <option value="Body Care">Body Care</option>
-                            <option value="Hair Care">Hair Care</option>
-                            <option value="Product Tools">Product Tools</option>
-                            <option value="Business Tools">Business Tools</option>
-                        </select>
-                    </div>
-                    <div class="product-list" id="productList"></div>
-                </div>
-                <div class="panel program-panel">
-                    <div class="panel-title">🧩 Programs</div>
-                    <div id="programList"></div>
-                </div>
-            </div>
-            <!-- Cart Panel -->
-            <div class="cart-panel">
-                <div class="print-header">
-                    <h2>Bell Corner</h2>
-                    <p>Order Form</p>
-                    <p>Date: <span id="printDate"></span></p>
-                    <p>Order Ref: <span id="printOrderRef"></span></p>
-                </div>
-                <div class="print-order-details" style="display:none;">
-                    <p><span class="detail-label">Order Reference:</span><span id="printOrderRefDetail"></span></p>
-                    <p><span class="detail-label">Customer Name:</span><span id="printCustomerName"></span></p>
-                    <p><span class="detail-label">Contact Number:</span><span id="printCustomerPhone"></span></p>
-                    <p><span class="detail-label">Delivery:</span><span id="printDeliveryMethod"></span></p>
-                    <p id="printAddressRow" style="display:none;"><span class="detail-label">Address:</span><span id="printDeliveryAddress"></span></p>
-                </div>
-                <div class="panel-title">🛒 Order Summary</div>
-                <div class="customer-info">
-                    <label for="customerName">Customer Name</label>
-                    <input type="text" id="customerName">
-                    <label for="customerPhone">Contact Number</label>
-                    <input type="tel" id="customerPhone">
-                </div>
-                <div class="delivery-info">
-                    <label>Delivery Method</label>
-                    <div class="segmented">
-                        <input type="radio" id="pickup" name="delivery" value="pickup" checked>
-                        <label for="pickup">Pickup</label>
-                        <input type="radio" id="delivery" name="delivery" value="delivery">
-                        <label for="delivery">Delivery</label>
-                    </div>
-                    <div class="address-input" id="addressInput" style="display:none;">
-                        <label for="deliveryAddress">Address</label>
-                        <input type="text" id="deliveryAddress">
-                    </div>
-                </div>
-                <div class="cart-table">
-                    <table id="cartTable">
-                        <thead>
-                            <tr><th>Product (SKU)</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
-                        </thead>
-                        <tbody id="cartBody"></tbody>
-                    </table>
-                </div>
-                <div class="summary">
-                    <div class="summary-row"><span class="label">Total Items</span><span class="value" id="totalItems">0</span></div>
-                    <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="subtotal">RM 0.00</span></div>
-                    <div class="summary-row print-hide"><span class="label">Total VP</span><span class="value" id="totalVP">0.00</span></div>
-                    <div class="summary-row" id="deliveryFeeRow" style="display:none;"><span class="label">Delivery Fee</span><span class="value" id="deliveryFee">RM 0.00</span></div>
-                    <div class="summary-row total"><span class="label">Total Price</span><span class="value" id="totalPrice">RM 0.00</span></div>
-                </div>
-                <button class="print-btn" onclick="printOrder()">🖨️ Print Order</button>
-                <button class="clear-btn" onclick="clearCart()">🗑️ Clear Cart</button>
-                <div class="print-footer"><p>Thank you for your order!</p></div>
-            </div>
-        </div>
+
+<div class="app">
+
+  <!-- ============ HEADER ============ -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark">BC</div>
+      <div>
+        <h1>Bell Corner</h1>
+        <p>Price Calculator · Updated 19 May 2026</p>
+      </div>
     </div>
 
-    <script>
-        // Product data (stock, name, category, VP, earnBase, retail, d25, d35, d42, d50)
-        const P=[
-            ['4462','Formula 1 - Banana Cream Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4465','Formula 1 - Cafe Latte Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4466','Formula 1 - Vanilla Cream Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4467','Formula 1 - Cookie Crunch Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4468','Formula 1 - Smooth Chocolate Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4470','Formula 1 - Summer Berries Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['4471','Formula 1 - Red Bean and Coix Seed Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
-            ['072K','Formula 1 Select','Core Nutrition',30.65,268.86,293.96,226.74,199.86,181.04,159.53],
-            ['0242','Formula 3 - Blended Soy and Whey Protein Powder','Core Nutrition',17.95,152.91,174.41,136.18,120.89,110.19,97.95],
-            ['0105','Tea Mix with Hibiscus - Original Flavour 51g','Core Nutrition',19.95,162.11,177.25,136.72,120.51,109.16,96.19],
-            ['0106','Tea Mix with Hibiscus - Original Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
-            ['0190','Tea Mix with Hibiscus - Peach Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
-            ['2121','Tea Mix with Hibiscus - Honey Ginger Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
-            ['3115','Multivitamins & Minerals','Core Nutrition',19.95,132.43,144.80,111.69,98.45,89.18,78.58],
-            ['0077','TC Formula','Energy & Fitness',32.95,248.73,271.95,209.77,184.89,167.48,147.58],
-            ['0102','N-R-G Guarana Powder Plus','Energy & Fitness',14.75,119.26,130.40,100.58,88.66,80.31,70.77],
-            ['1463','HERBALIFE24 CR7 Drive - Acai Berry Flavour','Energy & Fitness',24.90,181.81,212.64,167.19,149.01,136.28,121.73],
-            ['1521','HERBALIFE24 Formula 1 Sport - Vanilla Cream Flavour','Energy & Fitness',28.00,223.13,243.97,188.19,165.87,150.26,132.40],
-            ['1459','HERBALIFE24 RS Pro - Chocolate Flavour','Energy & Fitness',68.45,544.92,640.95,504.72,450.23,412.08,368.49],
-            ['0006','Herbal Aloe Concentrate Mix - Original Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
-            ['1065','Herbal Aloe Concentrate Mix - Mango Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
-            ['2631','Herbal Aloe Concentrate Mix - Mandarin Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
-            ['2864','Mixed Fibres with Inulin Powder Drink - Apple Flavour','Digestive Health',22.95,185.66,203.00,156.58,138.02,125.02,110.17],
-            ['2865','Mixed Fibres with Inulin Powder Drink - Original Flavour','Digestive Health',22.95,185.66,203.00,156.58,138.02,125.02,110.17],
-            ['0032','Garlic Plus','Heart Health',12.95,98.40,107.59,82.99,73.15,66.26,58.39],
-            ['0065','Omega 3 Fish Oil with EPA & DHA','Heart Health',25.75,191.33,209.19,161.36,142.22,128.83,113.52],
-            ['3150','NW Formula','Heart Health',48.75,385.61,421.62,325.22,286.66,259.66,228.81],
-            ['145K','ImmuLift - Blackcurrant Flavour','General Health',9.50,75.58,82.64,63.74,56.19,50.90,44.85],
-            ['044K','Herbal Retreat Powder','General Health',37.65,297.79,325.60,251.15,221.37,200.53,176.70],
-            ['218K','TurmeriX 336mg','Joint Health',22.30,180.17,196.99,151.95,133.93,121.32,106.90],
-            ['0020','Calcium Plus','Youthful Vitality',10.25,80.78,88.32,68.12,60.05,54.39,47.93],
-            ['0104','Celactivo','Youthful Vitality',20.50,152.10,166.30,128.27,113.06,102.42,90.25],
-            ['0056','Collagen Plus Powder - Orange Flavour','Youthful Vitality',43.55,340.27,372.04,286.97,252.95,229.13,201.90],
-            ['012K','High Protein Premix Coffee - Café Latte Flavour / Perisa Café Latte 金质咖啡 - 拿铁口味','Healthy Snacks',30.55,227.95,249.24,192.25,169.46,153.50,135.26],
-            ['0765','Soothing Aloe Cleanser (For Normal to Dry Skin)','SKIN Care',16.75,117.41,128.37,99.02,87.28,79.06,69.66],
-            ['0766','Polishing Citrus Cleanser (For Normal to Oily Skin)','SKIN Care',16.75,117.41,128.37,99.02,87.28,79.06,69.66],
-            ['0767','Energizing Herbal Toner 50ml','SKIN Care',12.70,92.09,100.69,77.67,68.46,62.01,54.64],
-            ['0768','Line Minimizing Serum','SKIN Care',37.70,272.84,298.32,230.11,202.83,183.73,161.90],
-            ['0769','Daily Glow Moisturizer','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
-            ['0770','Firming Eye Gel','SKIN Care',26.35,190.68,208.48,160.81,141.74,128.39,113.14],
-            ['0771','Hydrating Eye Cream','SKIN Care',26.35,190.68,208.48,160.81,141.74,128.39,113.14],
-            ['0773','Purifying Mint Clay Mask','SKIN Care',14.20,103.04,112.66,86.90,76.60,69.38,61.14],
-            ['0774','Replenishing Night Cream','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
-            ['0891','Energizing Herbal Toner 150ml','SKIN Care',32.30,235.01,256.95,198.20,174.70,158.25,139.44],
-            ['0899','Protective Moisturizer SPF 30PA+++','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
-            ['1492','Basic Program - Normal to Dry Skin','SKIN Care',86.25,620.34,678.26,523.17,461.14,417.72,368.09],
-            ['1496','Basic Program - Normal to Oil Skin','SKIN Care',86.25,620.34,678.26,523.17,461.14,417.72,368.09],
-            ['111K','Vitamin Facial Mask Moisturizing','Facial Mask',9.50,71.08,80.71,62.94,55.83,50.86,45.17],
-            ['2561','Herbalife Aloe Hand & Body Wash','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
-            ['2562','Herbalife Aloe Soothing Gel','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
-            ['2563','Herbalife Aloe Hand & Body Cream','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
-            ['2564','Herbalife Aloe Strenghtening Shampoo','Hair Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
-            ['2565','Herbalife Aloe Strenghtening Conditioner','Hair Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
-            ['182A','Measuring Spoon','Product Tools',0.10,3.60,5.00,null,null,null,null],
-            ['297A','Measuring Spoon - White (Metric) Set of 10','Product Tools',1.20,33.60,36.70,null,null,null,null],
-            ['295A','HLN Improved Shaker Cup','Product Tools',0.33,11.87,15.00,null,null,null,null],
-            ['296A','HLN Improved Shaker Cup','Product Tools',1.65,53.79,58.81,null,null,null,null],
-            ['8443','Straw Pack for 2 liter Water Bottle','Product Tools',0,12.80,13.99,null,null,null,null],
-            ['6B29','1L Garden Green Tritan Water Bottle','Product Tools',1.25,37.75,41.27,null,null,null,null],
-            ['6B30','2L Leaf Green Tritan Water Bottle','Product Tools',1.45,44.70,48.87,null,null,null,null],
-            ['926N','Go Green PP Woven Eco Bag','Product Tools',0,0,5.50,null,null,null,null],
-            ['0909',"Supervisor's Annual Processing Fee",'Business Tools',0,0,175.83,null,null,null,null],
-            ['9909','Annual Distributor Services Fee','Business Tools',0,0,41.37,null,null,null,null],
-            ['9942','BIZWORKS One Month Subscription / Langganan BIZWORKS Selama Sebulan / BIZWORKS 一个月订阅','Business Tools',0,0,24.84,null,null,null,null],
-            ['H351','Herbalife Distributor Pack HDP (ENG)','Business Tools',0,0,97.24,null,null,null,null],
-            ['H352','Herbalife Distributor Pack HDP (BM) / Pek Pengedar Herbalife','Business Tools',0,0,97.24,null,null,null,null],
-            ['H353','Herbalife Distributor Pack HDP (中文) / 经销商套装','Business Tools',0,0,97.24,null,null,null,null],
-            ['5174','Product Catalog (Eng)','Business Tools',0,0,2.64,null,null,null,null],
-            ['5175','Product Catalog (BM)','Business Tools',0,0,2.64,null,null,null,null],
-            ['5176','Product Catalog (中文)','Business Tools',0,0,2.64,null,null,null,null],
-            ['TRIAL', 'Trial Program', 'Programs', 0, 0, 0, null, null, null, null],
-            ['BASIC', 'Basic Program', 'Programs', 0, 0, 0, null, null, null, null],
-            ['ADVANCED', 'Advanced Program', 'Programs', 0, 0, 0, null, null, null, null],
-            ['ULTIMATE', 'Ultimate Program', 'Programs', 0, 0, 0, null, null, null, null]
-        ];
+    <div class="controls">
+      <label class="control">
+        <span>Region</span>
+        <select id="regionSelect">
+          <option value="west">West Malaysia</option>
+          <option value="east">East Malaysia</option>
+        </select>
+      </label>
+      <label class="control">
+        <span>Price Tier</span>
+        <select id="tierSelect">
+          <option value="retail">Retail</option>
+          <option value="d25">25% Off</option>
+          <option value="d35">35% Off</option>
+          <option value="d42">42% Off</option>
+          <option value="d50">50% Off</option>
+        </select>
+      </label>
+    </div>
+  </header>
 
-        // Flavour lists
-        const f1Flavours = P.filter(p => ['4462','4465','4466','4467','4468','4470','4471'].includes(p[0]));
-        const teaFlavours = P.filter(p => ['0105','0106','0190','2121'].includes(p[0]));
-        const aloeFlavours = P.filter(p => ['0006','1065','2631'].includes(p[0]));
-        const fibreFlavours = P.filter(p => ['2864','2865'].includes(p[0]));
-        const f3Flavours = P.filter(p => p[0] === '0242');
-        const multiFlavours = P.filter(p => p[0] === '3115');
-        const fishFlavours = P.filter(p => p[0] === '0065');
-        const immuFlavours = P.filter(p => p[0] === '145K');
+  <!-- ============ MAIN ============ -->
+  <main class="layout">
 
-        // Cart state
-        const cart = new Map();
+    <!-- ---------- SIDEBAR ---------- -->
+    <div class="sidebar">
 
-        // Program configurations
-        let trialConfig = { qty: 1, skus: [f1Flavours[0][0]] };
-        let basicConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]] };
-        let advancedConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]], fibreSkus: [fibreFlavours[0][0]], f3Skus: [f3Flavours[0][0]] };
-        let ultimateConfig = { aloeSkus: [aloeFlavours[0][0]], teaSkus: [teaFlavours[0][0]], f1Skus: [f1Flavours[0][0]], fibreSkus: [fibreFlavours[0][0]], f3Skus: [f3Flavours[0][0]], multiSkus: [multiFlavours[0][0]], fishSkus: [fishFlavours[0][0]], immuSkus: [immuFlavours[0][0]] };
+      <!-- Products -->
+      <section class="panel panel-products">
+        <div class="panel-head">
+          <h2>Products</h2>
+        </div>
 
-        // Helpers
-        const getPrice = (p, tier) => tier === 'retail' || p[5] === null ? p[5] : p[6 + (['0.25','0.35','0.42','0.5'].indexOf(tier))] ?? p[5];
-        const getDeliveryFee = () => {
-            if (document.querySelector('input[name="delivery"]:checked').value !== 'delivery') return 0;
-            return document.getElementById('regionSelector').value === 'west' ? 16 : 32;
-        };
-        const getProgramDeliveryFee = () => document.getElementById('regionSelector').value === 'west' ? 16 : 32;
-        const deliveryFeeForSummary = () => {
-            const hasProgram = Array.from(cart.values()).some(item => item.product[2] === 'Programs' || item.product.isTrial || item.product.isBasic || item.product.isAdvanced || item.product.isUltimate);
-            if (hasProgram) return 0;
-            return getDeliveryFee();
-        };
+        <div class="toolbar">
+          <div class="search-field" id="searchField">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input id="searchInput" type="text" autocomplete="off"
+                   placeholder="Search name, SKU or category…" aria-label="Search products">
+            <button class="search-clear" id="searchClear" type="button" aria-label="Clear search">✕</button>
+          </div>
 
-        // Program price calculations
-        function trialProgramPrice(trial) {
-            let sum = 0;
-            trial.skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
-            sum += P.find(p => p[0] === '182A')[5];
-            sum += P.find(p => p[0] === '295A')[5];
-            sum += 100;
-            sum += getProgramDeliveryFee();
-            return Math.ceil(sum / 10) * 10;
-        }
-        function basicProgramPrice() {
-            let sum = 0;
-            basicConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
-            basicConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
-            basicConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
-            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
-            return Math.ceil(sum / 10) * 10;
-        }
-        function advancedProgramPrice() {
-            let sum = 0;
-            advancedConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
-            advancedConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
-            advancedConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
-            advancedConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f => f[0] === sku)[5]; });
-            advancedConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f => f[0] === sku)[5]; });
-            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
-            return Math.ceil(sum / 10) * 10;
-        }
-        function ultimateProgramPrice() {
-            let sum = 0;
-            ultimateConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.multiSkus.forEach(sku => { sum += multiFlavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.fishSkus.forEach(sku => { sum += fishFlavours.find(f => f[0] === sku)[5]; });
-            ultimateConfig.immuSkus.forEach(sku => { sum += immuFlavours.find(f => f[0] === sku)[5]; });
-            sum += P.find(p => p[0] === '182A')[5] + P.find(p => p[0] === '295A')[5] + 100 + getProgramDeliveryFee();
-            return Math.ceil(sum / 10) * 10;
-        }
+          <select id="categorySelect" class="select-field" aria-label="Filter by category">
+            <option value="all">All Categories</option>
+            <option value="Core Nutrition">Core Nutrition</option>
+            <option value="Energy &amp; Fitness">Energy &amp; Fitness</option>
+            <option value="Digestive Health">Digestive Health</option>
+            <option value="Heart Health">Heart Health</option>
+            <option value="General Health">General Health</option>
+            <option value="Joint Health">Joint Health</option>
+            <option value="Youthful Vitality">Youthful Vitality</option>
+            <option value="Healthy Snacks">Healthy Snacks</option>
+            <option value="SKIN Care">SKIN Care</option>
+            <option value="Facial Mask">Facial Mask</option>
+            <option value="Body Care">Body Care</option>
+            <option value="Hair Care">Hair Care</option>
+            <option value="Product Tools">Product Tools</option>
+            <option value="Business Tools">Business Tools</option>
+          </select>
+        </div>
 
-        // Print order
-        function printOrder() {
-            if (cart.size === 0) { alert('Cart is empty. Please add products before printing.'); return; }
-            const now = new Date();
-            document.getElementById('printDate').textContent = now.toLocaleDateString('en-MY', { year: 'numeric', month: 'long', day: 'numeric' });
-            const name = document.getElementById('customerName').value;
-            const phone = document.getElementById('customerPhone').value;
-            const method = document.querySelector('input[name="delivery"]:checked').value;
-            const addr = document.getElementById('deliveryAddress').value;
+        <div class="product-list scroll-area" id="productList"></div>
+      </section>
 
-            // Generate order reference: ORD- + 8 characters based on current timestamp
-            const timePart = now.getTime().toString(36).toUpperCase().slice(-8);
-            const orderRef = 'ORD-' + timePart;
-            document.getElementById('printOrderRef').textContent = orderRef;
-            document.getElementById('printOrderRefDetail').textContent = orderRef;
+      <!-- Programs -->
+      <section class="panel panel-programs">
+        <div class="panel-head">
+          <h2>Programs</h2>
+        </div>
+        <div class="program-list scroll-area" id="programList"></div>
+      </section>
 
-            document.getElementById('printCustomerName').textContent = name || '';
-            document.getElementById('printCustomerPhone').textContent = phone || '';
-            document.getElementById('printDeliveryMethod').textContent = method === 'delivery' ? 'Delivery' : 'Pickup';
-            const row = document.getElementById('printAddressRow');
-            if (method === 'delivery') { document.getElementById('printDeliveryAddress').textContent = addr || ''; row.style.display = 'block'; }
-            else row.style.display = 'none';
-            document.title = 'Order_' + orderRef + '_' + now.toISOString().split('T')[0];
-            window.print();
-        }
+    </div>
 
-        // Search
-        function clearSearch() { document.getElementById('searchInput').value = ''; document.getElementById('searchWrap').classList.remove('has-text'); renderProducts(); document.getElementById('searchInput').focus(); }
+    <!-- ---------- CART ---------- -->
+    <section class="panel cart">
 
-        const highlight = (text, terms) => {
-            if (!terms?.length) return text;
-            let result = text;
-            terms.forEach(t => { result = result.replace(new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark>$1</mark>'); });
-            return result;
-        };
+      <!-- Print header -->
+      <div class="print-only print-header">
+        <h2>Bell Corner</h2>
+        <p>Order Form</p>
+        <p>Date: <span id="printDate"></span></p>
+        <p>Order Ref: <span id="printOrderRef"></span></p>
+      </div>
+      <div class="print-only print-details" id="printDetails">
+        <p><span class="detail-label">Order Reference:</span><span id="printRefDetail"></span></p>
+        <p><span class="detail-label">Customer Name:</span><span id="printName"></span></p>
+        <p><span class="detail-label">Contact Number:</span><span id="printPhone"></span></p>
+        <p><span class="detail-label">Delivery:</span><span id="printMethod"></span></p>
+        <p id="printAddressRow"><span class="detail-label">Address:</span><span id="printAddress"></span></p>
+      </div>
 
-        function renderProducts() {
-            const search = document.getElementById('searchInput').value.toLowerCase().trim();
-            const cat = document.getElementById('categoryFilter').value;
-            const tier = document.getElementById('discountTier').value;
-            const terms = search ? search.split(/\s+/).filter(Boolean) : [];
-            const list = document.getElementById('productList');
-            const wrap = document.getElementById('searchWrap');
-            wrap.classList.toggle('has-text', search.length > 0);
-            const filtered = P.filter(p => {
-                if (p[2] === 'Programs') return false;
-                if (cat !== 'all' && p[2] !== cat) return false;
-                return !terms.length || terms.every(t => p[1].toLowerCase().includes(t) || p[0].toLowerCase().includes(t) || p[2].toLowerCase().includes(t));
-            });
-            list.innerHTML = filtered.length ? filtered.map(p => {
-                const price = getPrice(p, tier);
-                return `<div class="product-item"><div class="product-name" title="${p[0]} - ${p[1]}"><span class="sku">${p[0]}</span>${highlight(p[1], terms)}</div><div class="product-vp">VP: ${p[3].toFixed(2)}</div><div class="product-bottom"><div class="product-price">RM ${price.toFixed(2)}</div><button class="add-btn" data-stock="${p[0]}">+</button></div></div>`;
-            }).join('') : '<div style="padding:30px;text-align:center;color:#aaa;">No products found</div>';
-        }
+      <div class="panel-head">
+        <h2>Order Summary</h2>
+        <span class="pill" id="itemPill">0 items</span>
+      </div>
 
-        function renderPrograms() {
-            const list = document.getElementById('programList');
-            const trial = P.find(p => p[0] === 'TRIAL');
-            const basic = P.find(p => p[0] === 'BASIC');
-            const advanced = P.find(p => p[0] === 'ADVANCED');
-            const ultimate = P.find(p => p[0] === 'ULTIMATE');
+      <div class="cart-scroll scroll-area">
 
-            const trialHTML = `
-                <div class="program-card" id="trialProgramCard">
-                    <div class="program-title">${trial[1]}</div>
-                    <div class="program-bottom">
-                        <div class="program-price" id="trialPriceOutside">RM 0.00</div>
-                        <div class="program-actions">
-                            <button class="configure-btn" onclick="toggleTrialConfig()" id="trialToggleBtn">Configure</button>
-                            <button class="add-btn" onclick="addTrialToCart()">+</button>
-                        </div>
-                    </div>
-                    <div class="program-config-content" id="trialConfigContent">
-                        <div class="trial-row">
-                            <label>Formula 1 Qty:</label>
-                            <div class="stepper">
-                                <button type="button" onclick="trialQtyMinus()">−</button>
-                                <span id="trialQtyDisplay">1</span>
-                                <button type="button" onclick="trialQtyPlus()">+</button>
-                            </div>
-                        </div>
-                        <div id="trialFlavourRows"></div>
-                        <div class="trial-price-display" id="trialPriceDisplay">Price: RM 0</div>
-                    </div>
-                </div>
-            `;
-            const basicHTML = `
-                <div class="program-card" id="basicProgramCard">
-                    <div class="program-title">${basic[1]}</div>
-                    <div class="program-bottom">
-                        <div class="program-price" id="basicPriceOutside">RM 0.00</div>
-                        <div class="program-actions">
-                            <button class="configure-btn" onclick="toggleBasicConfig()" id="basicToggleBtn">Configure</button>
-                            <button class="add-btn" onclick="addBasicToCart()">+</button>
-                        </div>
-                    </div>
-                    <div class="program-config-content" id="basicConfigContent">
-                        <div id="basicAloeSection">
-                            <div class="trial-row">
-                                <label>Aloe Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="basicQty('aloe', -1)">−</button>
-                                    <span id="basicAloeQty">${basicConfig.aloeSkus.length}</span>
-                                    <button type="button" onclick="basicQty('aloe', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="basicAloeFlavourRows"></div>
-                        </div>
-                        <div id="basicTeaSection">
-                            <div class="trial-row">
-                                <label>Tea Mix Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="basicQty('tea', -1)">−</button>
-                                    <span id="basicTeaQty">${basicConfig.teaSkus.length}</span>
-                                    <button type="button" onclick="basicQty('tea', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="basicTeaFlavourRows"></div>
-                        </div>
-                        <div id="basicF1Section">
-                            <div class="trial-row">
-                                <label>Formula 1 Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="basicQty('f1', -1)">−</button>
-                                    <span id="basicF1Qty">${basicConfig.f1Skus.length}</span>
-                                    <button type="button" onclick="basicQty('f1', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="basicF1FlavourRows"></div>
-                        </div>
-                        <div class="trial-price-display" id="basicPriceDisplay">Price: RM 0</div>
-                    </div>
-                </div>
-            `;
-            const advancedHTML = `
-                <div class="program-card" id="advancedProgramCard">
-                    <div class="program-title">${advanced[1]}</div>
-                    <div class="program-bottom">
-                        <div class="program-price" id="advancedPriceOutside">RM 0.00</div>
-                        <div class="program-actions">
-                            <button class="configure-btn" onclick="toggleAdvancedConfig()" id="advancedToggleBtn">Configure</button>
-                            <button class="add-btn" onclick="addAdvancedToCart()">+</button>
-                        </div>
-                    </div>
-                    <div class="program-config-content" id="advancedConfigContent">
-                        <div id="advancedAloeSection">
-                            <div class="trial-row">
-                                <label>Aloe Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="advancedQty('aloe', -1)">−</button>
-                                    <span id="advancedAloeQty">${advancedConfig.aloeSkus.length}</span>
-                                    <button type="button" onclick="advancedQty('aloe', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="advancedAloeFlavourRows"></div>
-                        </div>
-                        <div id="advancedTeaSection">
-                            <div class="trial-row">
-                                <label>Tea Mix Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="advancedQty('tea', -1)">−</button>
-                                    <span id="advancedTeaQty">${advancedConfig.teaSkus.length}</span>
-                                    <button type="button" onclick="advancedQty('tea', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="advancedTeaFlavourRows"></div>
-                        </div>
-                        <div id="advancedF1Section">
-                            <div class="trial-row">
-                                <label>Formula 1 Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="advancedQty('f1', -1)">−</button>
-                                    <span id="advancedF1Qty">${advancedConfig.f1Skus.length}</span>
-                                    <button type="button" onclick="advancedQty('f1', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="advancedF1FlavourRows"></div>
-                        </div>
-                        <div id="advancedFibreSection">
-                            <div class="trial-row">
-                                <label>Fibre Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="advancedQty('fibre', -1)">−</button>
-                                    <span id="advancedFibreQty">${advancedConfig.fibreSkus.length}</span>
-                                    <button type="button" onclick="advancedQty('fibre', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="advancedFibreFlavourRows"></div>
-                        </div>
-                        <div id="advancedF3Section">
-                            <div class="trial-row">
-                                <label>Formula 3 Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="advancedQty('f3', -1)">−</button>
-                                    <span id="advancedF3Qty">${advancedConfig.f3Skus.length}</span>
-                                    <button type="button" onclick="advancedQty('f3', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="trial-price-display" id="advancedPriceDisplay">Price: RM 0</div>
-                    </div>
-                </div>
-            `;
-            const ultimateHTML = `
-                <div class="program-card" id="ultimateProgramCard">
-                    <div class="program-title">${ultimate[1]}</div>
-                    <div class="program-bottom">
-                        <div class="program-price" id="ultimatePriceOutside">RM 0.00</div>
-                        <div class="program-actions">
-                            <button class="configure-btn" onclick="toggleUltimateConfig()" id="ultimateToggleBtn">Configure</button>
-                            <button class="add-btn" onclick="addUltimateToCart()">+</button>
-                        </div>
-                    </div>
-                    <div class="program-config-content" id="ultimateConfigContent">
-                        <div id="ultimateAloeSection">
-                            <div class="trial-row">
-                                <label>Aloe Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('aloe', -1)">−</button>
-                                    <span id="ultimateAloeQty">${ultimateConfig.aloeSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('aloe', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="ultimateAloeFlavourRows"></div>
-                        </div>
-                        <div id="ultimateTeaSection">
-                            <div class="trial-row">
-                                <label>Tea Mix Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('tea', -1)">−</button>
-                                    <span id="ultimateTeaQty">${ultimateConfig.teaSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('tea', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="ultimateTeaFlavourRows"></div>
-                        </div>
-                        <div id="ultimateF1Section">
-                            <div class="trial-row">
-                                <label>Formula 1 Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('f1', -1)">−</button>
-                                    <span id="ultimateF1Qty">${ultimateConfig.f1Skus.length}</span>
-                                    <button type="button" onclick="ultimateQty('f1', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="ultimateF1FlavourRows"></div>
-                        </div>
-                        <div id="ultimateFibreSection">
-                            <div class="trial-row">
-                                <label>Fibre Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('fibre', -1)">−</button>
-                                    <span id="ultimateFibreQty">${ultimateConfig.fibreSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('fibre', 1)">+</button>
-                                </div>
-                            </div>
-                            <div id="ultimateFibreFlavourRows"></div>
-                        </div>
-                        <div id="ultimateF3Section">
-                            <div class="trial-row">
-                                <label>Formula 3 Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('f3', -1)">−</button>
-                                    <span id="ultimateF3Qty">${ultimateConfig.f3Skus.length}</span>
-                                    <button type="button" onclick="ultimateQty('f3', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ultimateMultiSection">
-                            <div class="trial-row">
-                                <label>Multivitamin Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('multi', -1)">−</button>
-                                    <span id="ultimateMultiQty">${ultimateConfig.multiSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('multi', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ultimateFishSection">
-                            <div class="trial-row">
-                                <label>Fish Oil Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('fish', -1)">−</button>
-                                    <span id="ultimateFishQty">${ultimateConfig.fishSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('fish', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ultimateImmuSection">
-                            <div class="trial-row">
-                                <label>ImmuLift Qty:</label>
-                                <div class="stepper">
-                                    <button type="button" onclick="ultimateQty('immu', -1)">−</button>
-                                    <span id="ultimateImmuQty">${ultimateConfig.immuSkus.length}</span>
-                                    <button type="button" onclick="ultimateQty('immu', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="trial-price-display" id="ultimatePriceDisplay">Price: RM 0</div>
-                    </div>
-                </div>
-            `;
-            list.innerHTML = trialHTML + basicHTML + advancedHTML + ultimateHTML;
-            updateTrialFlavourRows();
-            updateTrialPriceDisplay();
-            updateBasicFlavourRows();
-            updateBasicPriceDisplay();
-            updateAdvancedFlavourRows();
-            updateAdvancedPriceDisplay();
-            updateUltimateFlavourRows();
-            updateUltimatePriceDisplay();
-        }
+        <div class="form-section">
+          <h3 class="section-title">Customer</h3>
+          <div class="field-grid">
+            <label class="field">
+              <span>Name</span>
+              <input type="text" id="customerName" placeholder="Full name">
+            </label>
+            <label class="field">
+              <span>Contact Number</span>
+              <input type="tel" id="customerPhone" placeholder="e.g. 012-345 6789">
+            </label>
+          </div>
+        </div>
 
-        // Toggle functions
-        function toggleTrialConfig() { const content = document.getElementById('trialConfigContent'); content.classList.toggle('show'); document.getElementById('trialToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) updateTrialPriceDisplay(); }
-        function toggleBasicConfig() { const content = document.getElementById('basicConfigContent'); content.classList.toggle('show'); document.getElementById('basicToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateBasicFlavourRows(); updateBasicPriceDisplay(); } }
-        function toggleAdvancedConfig() { const content = document.getElementById('advancedConfigContent'); content.classList.toggle('show'); document.getElementById('advancedToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateAdvancedFlavourRows(); updateAdvancedPriceDisplay(); } }
-        function toggleUltimateConfig() { const content = document.getElementById('ultimateConfigContent'); content.classList.toggle('show'); document.getElementById('ultimateToggleBtn').textContent = content.classList.contains('show') ? 'Close' : 'Configure'; if (content.classList.contains('show')) { updateUltimateFlavourRows(); updateUltimatePriceDisplay(); } }
+        <div class="form-section">
+          <h3 class="section-title">Delivery</h3>
+          <div class="segmented">
+            <input type="radio" name="delivery" id="optPickup" value="pickup" checked>
+            <label for="optPickup">Pickup</label>
+            <input type="radio" name="delivery" id="optDelivery" value="delivery">
+            <label for="optDelivery">Delivery</label>
+          </div>
+          <label class="field" id="addressField" hidden>
+            <span>Address</span>
+            <input type="text" id="deliveryAddress" placeholder="Delivery address">
+          </label>
+        </div>
 
-        // Quantity functions for trial
-        function trialQtyPlus() { if (trialConfig.qty < 10) { trialConfig.qty++; trialConfig.skus.push(f1Flavours[0][0]); updateTrialFlavourRows(); updateTrialPriceDisplay(); document.getElementById('trialQtyDisplay').textContent = trialConfig.qty; } }
-        function trialQtyMinus() { if (trialConfig.qty > 1) { trialConfig.qty--; trialConfig.skus.pop(); updateTrialFlavourRows(); updateTrialPriceDisplay(); document.getElementById('trialQtyDisplay').textContent = trialConfig.qty; } }
+        <div id="cartTableWrap"></div>
+      </div>
 
-        // Quantity functions for basic
-        function basicQty(type, delta) {
-            if (type === 'f1') { let newQty = basicConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.f1Skus.push(f1Flavours[0][0]); else basicConfig.f1Skus.pop(); document.getElementById('basicF1Qty').textContent = basicConfig.f1Skus.length; updateBasicFlavourRows(); } }
-            else if (type === 'tea') { let newQty = basicConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.teaSkus.push(teaFlavours[0][0]); else basicConfig.teaSkus.pop(); document.getElementById('basicTeaQty').textContent = basicConfig.teaSkus.length; updateBasicFlavourRows(); } }
-            else if (type === 'aloe') { let newQty = basicConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) basicConfig.aloeSkus.push(aloeFlavours[0][0]); else basicConfig.aloeSkus.pop(); document.getElementById('basicAloeQty').textContent = basicConfig.aloeSkus.length; updateBasicFlavourRows(); } }
-            updateBasicPriceDisplay();
-        }
+      <div class="cart-footer">
+        <div class="summary">
+          <div class="summary-row">
+            <span class="label">Total Items</span>
+            <span class="value" id="sumItems">0</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Subtotal</span>
+            <span class="value" id="sumSubtotal">RM 0.00</span>
+          </div>
+          <div class="summary-row" id="sumVpRow">
+            <span class="label">Total VP</span>
+            <span class="value" id="sumVp">0.00</span>
+          </div>
+          <div class="summary-row" id="sumFeeRow" hidden>
+            <span class="label" id="sumFeeLabel">Delivery Fee</span>
+            <span class="value" id="sumFee">RM 0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span class="label">Total Price</span>
+            <span class="value" id="sumTotal">RM 0.00</span>
+          </div>
+        </div>
 
-        // Quantity functions for advanced
-        function advancedQty(type, delta) {
-            if (type === 'f1') { let newQty = advancedConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.f1Skus.push(f1Flavours[0][0]); else advancedConfig.f1Skus.pop(); document.getElementById('advancedF1Qty').textContent = advancedConfig.f1Skus.length; updateAdvancedFlavourRows(); } }
-            else if (type === 'tea') { let newQty = advancedConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.teaSkus.push(teaFlavours[0][0]); else advancedConfig.teaSkus.pop(); document.getElementById('advancedTeaQty').textContent = advancedConfig.teaSkus.length; updateAdvancedFlavourRows(); } }
-            else if (type === 'aloe') { let newQty = advancedConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.aloeSkus.push(aloeFlavours[0][0]); else advancedConfig.aloeSkus.pop(); document.getElementById('advancedAloeQty').textContent = advancedConfig.aloeSkus.length; updateAdvancedFlavourRows(); } }
-            else if (type === 'fibre') { let newQty = advancedConfig.fibreSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.fibreSkus.push(fibreFlavours[0][0]); else advancedConfig.fibreSkus.pop(); document.getElementById('advancedFibreQty').textContent = advancedConfig.fibreSkus.length; updateAdvancedFlavourRows(); } }
-            else if (type === 'f3') { let newQty = advancedConfig.f3Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) advancedConfig.f3Skus.push(f3Flavours[0][0]); else advancedConfig.f3Skus.pop(); document.getElementById('advancedF3Qty').textContent = advancedConfig.f3Skus.length; updateAdvancedPriceDisplay(); } }
-        }
+        <button class="btn btn-primary" id="printBtn" type="button">Print Order</button>
+        <button class="btn btn-danger" id="clearBtn" type="button">Clear Cart</button>
+      </div>
+    </section>
 
-        // Quantity functions for ultimate
-        function ultimateQty(type, delta) {
-            if (type === 'f1') { let newQty = ultimateConfig.f1Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.f1Skus.push(f1Flavours[0][0]); else ultimateConfig.f1Skus.pop(); document.getElementById('ultimateF1Qty').textContent = ultimateConfig.f1Skus.length; updateUltimateFlavourRows(); } }
-            else if (type === 'tea') { let newQty = ultimateConfig.teaSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.teaSkus.push(teaFlavours[0][0]); else ultimateConfig.teaSkus.pop(); document.getElementById('ultimateTeaQty').textContent = ultimateConfig.teaSkus.length; updateUltimateFlavourRows(); } }
-            else if (type === 'aloe') { let newQty = ultimateConfig.aloeSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.aloeSkus.push(aloeFlavours[0][0]); else ultimateConfig.aloeSkus.pop(); document.getElementById('ultimateAloeQty').textContent = ultimateConfig.aloeSkus.length; updateUltimateFlavourRows(); } }
-            else if (type === 'fibre') { let newQty = ultimateConfig.fibreSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.fibreSkus.push(fibreFlavours[0][0]); else ultimateConfig.fibreSkus.pop(); document.getElementById('ultimateFibreQty').textContent = ultimateConfig.fibreSkus.length; updateUltimateFlavourRows(); } }
-            else if (type === 'f3') { let newQty = ultimateConfig.f3Skus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.f3Skus.push(f3Flavours[0][0]); else ultimateConfig.f3Skus.pop(); document.getElementById('ultimateF3Qty').textContent = ultimateConfig.f3Skus.length; updateUltimatePriceDisplay(); } }
-            else if (type === 'multi') { let newQty = ultimateConfig.multiSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.multiSkus.push(multiFlavours[0][0]); else ultimateConfig.multiSkus.pop(); document.getElementById('ultimateMultiQty').textContent = ultimateConfig.multiSkus.length; updateUltimatePriceDisplay(); } }
-            else if (type === 'fish') { let newQty = ultimateConfig.fishSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.fishSkus.push(fishFlavours[0][0]); else ultimateConfig.fishSkus.pop(); document.getElementById('ultimateFishQty').textContent = ultimateConfig.fishSkus.length; updateUltimatePriceDisplay(); } }
-            else if (type === 'immu') { let newQty = ultimateConfig.immuSkus.length + delta; if (newQty >= 1 && newQty <= 10) { if (delta > 0) ultimateConfig.immuSkus.push(immuFlavours[0][0]); else ultimateConfig.immuSkus.pop(); document.getElementById('ultimateImmuQty').textContent = ultimateConfig.immuSkus.length; updateUltimatePriceDisplay(); } }
-        }
+  </main>
+</div>
 
-        // Update flavour dropdowns
-        function updateTrialFlavourRows() {
-            const container = document.getElementById('trialFlavourRows'); if (!container) return; container.innerHTML = '';
-            for (let i = 0; i < trialConfig.qty; i++) {
-                const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`;
-                const select = document.createElement('select'); select.dataset.index = i;
-                f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === trialConfig.skus[i]) opt.selected = true; select.appendChild(opt); });
-                select.onchange = (e) => { trialConfig.skus[parseInt(e.target.dataset.index)] = e.target.value; updateTrialPriceDisplay(); };
-                row.appendChild(select); container.appendChild(row);
-            }
-        }
-        function updateBasicFlavourRows() {
-            const aloeContainer = document.getElementById('basicAloeFlavourRows');
-            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < basicConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
-            const teaContainer = document.getElementById('basicTeaFlavourRows');
-            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < basicConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
-            const f1Container = document.getElementById('basicF1FlavourRows');
-            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < basicConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === basicConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { basicConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateBasicPriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
-        }
-        function updateAdvancedFlavourRows() {
-            const aloeContainer = document.getElementById('advancedAloeFlavourRows');
-            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
-            const teaContainer = document.getElementById('advancedTeaFlavourRows');
-            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
-            const f1Container = document.getElementById('advancedF1FlavourRows');
-            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < advancedConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
-            const fibreContainer = document.getElementById('advancedFibreFlavourRows');
-            if (fibreContainer) { fibreContainer.innerHTML = ''; for (let i = 0; i < advancedConfig.fibreSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Fibre #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; fibreFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); if (f[0] === advancedConfig.fibreSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { advancedConfig.fibreSkus[parseInt(e.target.dataset.index)] = e.target.value; updateAdvancedPriceDisplay(); }; row.appendChild(select); fibreContainer.appendChild(row); } }
-        }
-        function updateUltimateFlavourRows() {
-            const aloeContainer = document.getElementById('ultimateAloeFlavourRows');
-            if (aloeContainer) { aloeContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.aloeSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Aloe #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; aloeFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.aloeSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.aloeSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); aloeContainer.appendChild(row); } }
-            const teaContainer = document.getElementById('ultimateTeaFlavourRows');
-            if (teaContainer) { teaContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.teaSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Tea #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; teaFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.teaSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.teaSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); teaContainer.appendChild(row); } }
-            const f1Container = document.getElementById('ultimateF1FlavourRows');
-            if (f1Container) { f1Container.innerHTML = ''; for (let i = 0; i < ultimateConfig.f1Skus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>F1 #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; f1Flavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Formula 1 - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.f1Skus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.f1Skus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); f1Container.appendChild(row); } }
-            const fibreContainer = document.getElementById('ultimateFibreFlavourRows');
-            if (fibreContainer) { fibreContainer.innerHTML = ''; for (let i = 0; i < ultimateConfig.fibreSkus.length; i++) { const row = document.createElement('div'); row.className = 'trial-row'; row.innerHTML = `<label>Fibre #${i + 1}:</label>`; const select = document.createElement('select'); select.dataset.index = i; fibreFlavours.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = f[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); if (f[0] === ultimateConfig.fibreSkus[i]) opt.selected = true; select.appendChild(opt); }); select.onchange = (e) => { ultimateConfig.fibreSkus[parseInt(e.target.dataset.index)] = e.target.value; updateUltimatePriceDisplay(); }; row.appendChild(select); fibreContainer.appendChild(row); } }
-        }
+<script>
+"use strict";
 
-        // Price display updates
-        function updateTrialPriceDisplay() { const display = document.getElementById('trialPriceDisplay'); if (!display) return; const price = trialProgramPrice(trialConfig); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('trialPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
-        function updateBasicPriceDisplay() { const display = document.getElementById('basicPriceDisplay'); if (!display) return; const price = basicProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('basicPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
-        function updateAdvancedPriceDisplay() { const display = document.getElementById('advancedPriceDisplay'); if (!display) return; const price = advancedProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('advancedPriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
-        function updateUltimatePriceDisplay() { const display = document.getElementById('ultimatePriceDisplay'); if (!display) return; const price = ultimateProgramPrice(); display.textContent = 'Price: RM ' + price.toFixed(2); const outside = document.getElementById('ultimatePriceOutside'); if (outside) outside.textContent = 'RM ' + price.toFixed(2); }
+/* ============================================================
+   1. DATA
+   ============================================================ */
 
-        // Add to cart functions
-        function addTrialToCart() {
-            const f1Products = trialConfig.skus.map(sku => f1Flavours.find(f => f[0] === sku));
-            const counts = {};
-            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts[name] = (counts[name] || 0) + 1; });
-            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
-            const trialName = `Trial Program (${parts.join(', ')})`;
-            const vp = f1Products.reduce((sum, p) => sum + p[3], 0) + 0.10 + 0.33;
-            const product = { sku: 'TRIAL_CUSTOM', name: trialName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isTrial: true, trialConfig: { skus: trialConfig.skus.slice() } };
-            cart.set('TRIAL_CUSTOM_' + Date.now(), { product: product, qty: 1 });
-            renderCart();
-        }
-        function addBasicToCart() {
-            const aloeProducts = basicConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
-            const teaProducts = basicConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
-            const f1Products = basicConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
-            const counts = {};
-            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
-            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
-            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
-            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
-            const basicName = `Basic Program (${parts.join(', ')})`;
-            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
-            const product = { sku: 'BASIC_CUSTOM', name: basicName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isBasic: true, basicConfig: { aloeSkus: basicConfig.aloeSkus.slice(), teaSkus: basicConfig.teaSkus.slice(), f1Skus: basicConfig.f1Skus.slice() } };
-            cart.set('BASIC_CUSTOM_' + Date.now(), { product: product, qty: 1 });
-            renderCart();
-        }
-        function addAdvancedToCart() {
-            const aloeProducts = advancedConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
-            const teaProducts = advancedConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
-            const f1Products = advancedConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
-            const fibreProducts = advancedConfig.fibreSkus.map(sku => fibreFlavours.find(f => f[0] === sku));
-            const f3Products = advancedConfig.f3Skus.map(sku => f3Flavours.find(f => f[0] === sku));
-            const counts = {};
-            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
-            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
-            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
-            fibreProducts.forEach(p => { const name = p[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); counts['Fibre ' + name] = (counts['Fibre ' + name] || 0) + 1; });
-            f3Products.forEach(p => { const name = p[1].replace('Formula 3 - ', '').replace(' Powder', ''); counts['F3 ' + name] = (counts['F3 ' + name] || 0) + 1; });
-            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
-            const advancedName = `Advanced Program (${parts.join(', ')})`;
-            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + fibreProducts.reduce((sum,p)=>sum+p[3],0) + f3Products.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
-            const product = { sku: 'ADVANCED_CUSTOM', name: advancedName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isAdvanced: true, advancedConfig: { aloeSkus: advancedConfig.aloeSkus.slice(), teaSkus: advancedConfig.teaSkus.slice(), f1Skus: advancedConfig.f1Skus.slice(), fibreSkus: advancedConfig.fibreSkus.slice(), f3Skus: advancedConfig.f3Skus.slice() } };
-            cart.set('ADVANCED_CUSTOM_' + Date.now(), { product: product, qty: 1 });
-            renderCart();
-        }
-        function addUltimateToCart() {
-            const aloeProducts = ultimateConfig.aloeSkus.map(sku => aloeFlavours.find(f => f[0] === sku));
-            const teaProducts = ultimateConfig.teaSkus.map(sku => teaFlavours.find(f => f[0] === sku));
-            const f1Products = ultimateConfig.f1Skus.map(sku => f1Flavours.find(f => f[0] === sku));
-            const fibreProducts = ultimateConfig.fibreSkus.map(sku => fibreFlavours.find(f => f[0] === sku));
-            const f3Products = ultimateConfig.f3Skus.map(sku => f3Flavours.find(f => f[0] === sku));
-            const multiProducts = ultimateConfig.multiSkus.map(sku => multiFlavours.find(f => f[0] === sku));
-            const fishProducts = ultimateConfig.fishSkus.map(sku => fishFlavours.find(f => f[0] === sku));
-            const immuProducts = ultimateConfig.immuSkus.map(sku => immuFlavours.find(f => f[0] === sku));
-            const counts = {};
-            aloeProducts.forEach(p => { const name = p[1].replace('Herbal Aloe Concentrate Mix - ', '').replace(' Flavour', ''); counts['Aloe ' + name] = (counts['Aloe ' + name] || 0) + 1; });
-            teaProducts.forEach(p => { const name = p[1].replace('Tea Mix with Hibiscus - ', '').replace(' Flavour', ''); counts['Tea ' + name] = (counts['Tea ' + name] || 0) + 1; });
-            f1Products.forEach(p => { const name = p[1].replace('Formula 1 - ', '').replace(' Flavour', ''); counts['F1 ' + name] = (counts['F1 ' + name] || 0) + 1; });
-            fibreProducts.forEach(p => { const name = p[1].replace('Mixed Fibres with Inulin Powder Drink - ', '').replace(' Flavour', ''); counts['Fibre ' + name] = (counts['Fibre ' + name] || 0) + 1; });
-            f3Products.forEach(p => { const name = p[1].replace('Formula 3 - ', '').replace(' Powder', ''); counts['F3 ' + name] = (counts['F3 ' + name] || 0) + 1; });
-            multiProducts.forEach(p => { counts['Multi'] = (counts['Multi'] || 0) + 1; });
-            fishProducts.forEach(p => { counts['Fish Oil'] = (counts['Fish Oil'] || 0) + 1; });
-            immuProducts.forEach(p => { counts['ImmuLift'] = (counts['ImmuLift'] || 0) + 1; });
-            const parts = Object.entries(counts).map(([name, count]) => count > 1 ? `${count}x ${name}` : name);
-            const ultimateName = `Ultimate Program (${parts.join(', ')})`;
-            const vp = aloeProducts.reduce((sum,p)=>sum+p[3],0) + teaProducts.reduce((sum,p)=>sum+p[3],0) + f1Products.reduce((sum,p)=>sum+p[3],0) + fibreProducts.reduce((sum,p)=>sum+p[3],0) + f3Products.reduce((sum,p)=>sum+p[3],0) + multiProducts.reduce((sum,p)=>sum+p[3],0) + fishProducts.reduce((sum,p)=>sum+p[3],0) + immuProducts.reduce((sum,p)=>sum+p[3],0) + P.find(p=>p[0]==='182A')[3] + P.find(p=>p[0]==='295A')[3];
-            const product = { sku: 'ULTIMATE_CUSTOM', name: ultimateName, category: 'Programs', vp: vp, earnBase: 0, retail: null, isUltimate: true, ultimateConfig: { aloeSkus: ultimateConfig.aloeSkus.slice(), teaSkus: ultimateConfig.teaSkus.slice(), f1Skus: ultimateConfig.f1Skus.slice(), fibreSkus: ultimateConfig.fibreSkus.slice(), f3Skus: ultimateConfig.f3Skus.slice(), multiSkus: ultimateConfig.multiSkus.slice(), fishSkus: ultimateConfig.fishSkus.slice(), immuSkus: ultimateConfig.immuSkus.slice() } };
-            cart.set('ULTIMATE_CUSTOM_' + Date.now(), { product: product, qty: 1 });
-            renderCart();
-        }
+/* SKU, Name, Category, VP, Earn Base, Retail, 25%, 35%, 42%, 50% */
+const RAW_PRODUCTS = [
+  ['4462','Formula 1 - Banana Cream Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4465','Formula 1 - Cafe Latte Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4466','Formula 1 - Vanilla Cream Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4467','Formula 1 - Cookie Crunch Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4468','Formula 1 - Smooth Chocolate Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4470','Formula 1 - Summer Berries Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['4471','Formula 1 - Red Bean and Coix Seed Flavour','Core Nutrition',23.95,193.92,212.03,163.55,144.16,130.58,115.07],
+  ['072K','Formula 1 Select','Core Nutrition',30.65,268.86,293.96,226.74,199.86,181.04,159.53],
+  ['0242','Formula 3 - Blended Soy and Whey Protein Powder','Core Nutrition',17.95,152.91,174.41,136.18,120.89,110.19,97.95],
+  ['0105','Tea Mix with Hibiscus - Original Flavour 51g','Core Nutrition',19.95,162.11,177.25,136.72,120.51,109.16,96.19],
+  ['0106','Tea Mix with Hibiscus - Original Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
+  ['0190','Tea Mix with Hibiscus - Peach Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
+  ['2121','Tea Mix with Hibiscus - Honey Ginger Flavour 102g','Core Nutrition',34.95,280.91,307.14,236.91,208.82,189.16,166.68],
+  ['3115','Multivitamins & Minerals','Core Nutrition',19.95,132.43,144.80,111.69,98.45,89.18,78.58],
+  ['0077','TC Formula','Energy & Fitness',32.95,248.73,271.95,209.77,184.89,167.48,147.58],
+  ['0102','N-R-G Guarana Powder Plus','Energy & Fitness',14.75,119.26,130.40,100.58,88.66,80.31,70.77],
+  ['1463','HERBALIFE24 CR7 Drive - Acai Berry Flavour','Energy & Fitness',24.90,181.81,212.64,167.19,149.01,136.28,121.73],
+  ['1521','HERBALIFE24 Formula 1 Sport - Vanilla Cream Flavour','Energy & Fitness',28.00,223.13,243.97,188.19,165.87,150.26,132.40],
+  ['1459','HERBALIFE24 RS Pro - Chocolate Flavour','Energy & Fitness',68.45,544.92,640.95,504.72,450.23,412.08,368.49],
+  ['0006','Herbal Aloe Concentrate Mix - Original Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
+  ['1065','Herbal Aloe Concentrate Mix - Mango Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
+  ['2631','Herbal Aloe Concentrate Mix - Mandarin Flavour','Digestive Health',24.95,208.67,228.15,175.98,155.12,140.51,123.81],
+  ['2864','Mixed Fibres with Inulin Powder Drink - Apple Flavour','Digestive Health',22.95,185.66,203.00,156.58,138.02,125.02,110.17],
+  ['2865','Mixed Fibres with Inulin Powder Drink - Original Flavour','Digestive Health',22.95,185.66,203.00,156.58,138.02,125.02,110.17],
+  ['0032','Garlic Plus','Heart Health',12.95,98.40,107.59,82.99,73.15,66.26,58.39],
+  ['0065','Omega 3 Fish Oil with EPA & DHA','Heart Health',25.75,191.33,209.19,161.36,142.22,128.83,113.52],
+  ['3150','NW Formula','Heart Health',48.75,385.61,421.62,325.22,286.66,259.66,228.81],
+  ['145K','ImmuLift - Blackcurrant Flavour','General Health',9.50,75.58,82.64,63.74,56.19,50.90,44.85],
+  ['044K','Herbal Retreat Powder','General Health',37.65,297.79,325.60,251.15,221.37,200.53,176.70],
+  ['218K','TurmeriX 336mg','Joint Health',22.30,180.17,196.99,151.95,133.93,121.32,106.90],
+  ['0020','Calcium Plus','Youthful Vitality',10.25,80.78,88.32,68.12,60.05,54.39,47.93],
+  ['0104','Celactivo','Youthful Vitality',20.50,152.10,166.30,128.27,113.06,102.42,90.25],
+  ['0056','Collagen Plus Powder - Orange Flavour','Youthful Vitality',43.55,340.27,372.04,286.97,252.95,229.13,201.90],
+  ['012K','High Protein Premix Coffee - Café Latte Flavour / Perisa Café Latte 金质咖啡 - 拿铁口味','Healthy Snacks',30.55,227.95,249.24,192.25,169.46,153.50,135.26],
+  ['0765','Soothing Aloe Cleanser (For Normal to Dry Skin)','SKIN Care',16.75,117.41,128.37,99.02,87.28,79.06,69.66],
+  ['0766','Polishing Citrus Cleanser (For Normal to Oily Skin)','SKIN Care',16.75,117.41,128.37,99.02,87.28,79.06,69.66],
+  ['0767','Energizing Herbal Toner 50ml','SKIN Care',12.70,92.09,100.69,77.67,68.46,62.01,54.64],
+  ['0768','Line Minimizing Serum','SKIN Care',37.70,272.84,298.32,230.11,202.83,183.73,161.90],
+  ['0769','Daily Glow Moisturizer','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
+  ['0770','Firming Eye Gel','SKIN Care',26.35,190.68,208.48,160.81,141.74,128.39,113.14],
+  ['0771','Hydrating Eye Cream','SKIN Care',26.35,190.68,208.48,160.81,141.74,128.39,113.14],
+  ['0773','Purifying Mint Clay Mask','SKIN Care',14.20,103.04,112.66,86.90,76.60,69.38,61.14],
+  ['0774','Replenishing Night Cream','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
+  ['0891','Energizing Herbal Toner 150ml','SKIN Care',32.30,235.01,256.95,198.20,174.70,158.25,139.44],
+  ['0899','Protective Moisturizer SPF 30PA+++','SKIN Care',28.40,205.42,224.60,173.24,152.70,138.32,121.89],
+  ['1492','Basic Program - Normal to Dry Skin','SKIN Care',86.25,620.34,678.26,523.17,461.14,417.72,368.09],
+  ['1496','Basic Program - Normal to Oil Skin','SKIN Care',86.25,620.34,678.26,523.17,461.14,417.72,368.09],
+  ['111K','Vitamin Facial Mask Moisturizing','Facial Mask',9.50,71.08,80.71,62.94,55.83,50.86,45.17],
+  ['2561','Herbalife Aloe Hand & Body Wash','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
+  ['2562','Herbalife Aloe Soothing Gel','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
+  ['2563','Herbalife Aloe Hand & Body Cream','Body Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
+  ['2564','Herbalife Aloe Strenghtening Shampoo','Hair Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
+  ['2565','Herbalife Aloe Strenghtening Conditioner','Hair Care',8.30,48.50,53.03,40.90,36.05,32.66,28.78],
+  ['182A','Measuring Spoon','Product Tools',0.10,3.60,5.00,null,null,null,null],
+  ['297A','Measuring Spoon - White (Metric) Set of 10','Product Tools',1.20,33.60,36.70,null,null,null,null],
+  ['295A','HLN Improved Shaker Cup','Product Tools',0.33,11.87,15.00,null,null,null,null],
+  ['296A','HLN Improved Shaker Cup','Product Tools',1.65,53.79,58.81,null,null,null,null],
+  ['8443','Straw Pack for 2 liter Water Bottle','Product Tools',0,12.80,13.99,null,null,null,null],
+  ['6B29','1L Garden Green Tritan Water Bottle','Product Tools',1.25,37.75,41.27,null,null,null,null],
+  ['6B30','2L Leaf Green Tritan Water Bottle','Product Tools',1.45,44.70,48.87,null,null,null,null],
+  ['926N','Go Green PP Woven Eco Bag','Product Tools',0,0,5.50,null,null,null,null],
+  ['0909',"Supervisor's Annual Processing Fee",'Business Tools',0,0,175.83,null,null,null,null],
+  ['9909','Annual Distributor Services Fee','Business Tools',0,0,41.37,null,null,null,null],
+  ['9942','BIZWORKS One Month Subscription / Langganan BIZWORKS Selama Sebulan / BIZWORKS 一个月订阅','Business Tools',0,0,24.84,null,null,null,null],
+  ['H351','Herbalife Distributor Pack HDP (ENG)','Business Tools',0,0,97.24,null,null,null,null],
+  ['H352','Herbalife Distributor Pack HDP (BM) / Pek Pengedar Herbalife','Business Tools',0,0,97.24,null,null,null,null],
+  ['H353','Herbalife Distributor Pack HDP (中文) / 经销商套装','Business Tools',0,0,97.24,null,null,null,null],
+  ['5174','Product Catalog (Eng)','Business Tools',0,0,2.64,null,null,null,null],
+  ['5175','Product Catalog (BM)','Business Tools',0,0,2.64,null,null,null,null],
+  ['5176','Product Catalog (中文)','Business Tools',0,0,2.64,null,null,null,null]
+];
 
-        // Cart rendering
-        function renderCart() {
-            const tier = document.getElementById('discountTier').value;
-            const tbody = document.getElementById('cartBody');
-            let sub = 0, items = 0, vpTotal = 0;
-            tbody.innerHTML = cart.size ? Array.from(cart.entries()).map(([key, item]) => {
-                const p = item.product;
-                let price, total;
-                if (p.isTrial) { price = trialProgramPrice(p.trialConfig); total = price * item.qty; vpTotal += p.vp * item.qty; }
-                else if (p.isBasic) { let sum = 0; p.basicConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.basicConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.basicConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
-                else if (p.isAdvanced) { let sum = 0; p.advancedConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f=>f[0]===sku)[5]; }); p.advancedConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
-                else if (p.isUltimate) { let sum = 0; p.ultimateConfig.aloeSkus.forEach(sku => { sum += aloeFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.teaSkus.forEach(sku => { sum += teaFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.f1Skus.forEach(sku => { sum += f1Flavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.fibreSkus.forEach(sku => { sum += fibreFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.f3Skus.forEach(sku => { sum += f3Flavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.multiSkus.forEach(sku => { sum += multiFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.fishSkus.forEach(sku => { sum += fishFlavours.find(f=>f[0]===sku)[5]; }); p.ultimateConfig.immuSkus.forEach(sku => { sum += immuFlavours.find(f=>f[0]===sku)[5]; }); sum += P.find(pr=>pr[0]==='182A')[5] + P.find(pr=>pr[0]==='295A')[5] + 100 + getProgramDeliveryFee(); price = Math.ceil(sum/10)*10; total = price * item.qty; vpTotal += p.vp * item.qty; }
-                else { price = getPrice(p, tier); if (p[2] === 'Programs') price += getProgramDeliveryFee(); total = price * item.qty; vpTotal += p[3] * item.qty; }
-                sub += total;
-                items += item.qty;
-                const displayName = p.isTrial ? p.name : (p.isBasic ? p.name : (p.isAdvanced ? p.name : (p.isUltimate ? p.name : (p[2] === 'Programs' ? p[1] : `${p[0]} - ${p[1]}`))));
-                return `<tr><td class="cart-item-name" title="${displayName}">${displayName}</td><td><div class="qty-control"><button class="qty-btn" data-stock="${key}" data-delta="-1">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" data-stock="${key}" data-delta="1">+</button></div></td><td>RM ${price.toFixed(2)}</td><td style="font-weight:700;">RM ${total.toFixed(2)}</td><td><button class="remove-btn" data-stock="${key}">✕</button></td></tr>`;
-            }).join('') : '<tr><td colspan="5" style="text-align:center;color:#999;padding:40px;">Cart is empty<br>Add products from the list</td></tr>';
-            const fee = deliveryFeeForSummary();
-            document.getElementById('totalItems').textContent = items;
-            document.getElementById('subtotal').textContent = 'RM ' + sub.toFixed(2);
-            document.getElementById('totalVP').textContent = vpTotal.toFixed(2);
-            document.getElementById('totalPrice').textContent = 'RM ' + (sub + fee).toFixed(2);
-            const feeRow = document.getElementById('deliveryFeeRow');
-            const isDelivery = document.querySelector('input[name="delivery"]:checked').value === 'delivery';
-            if (isDelivery) {
-                feeRow.style.display = 'flex';
-                const label = feeRow.querySelector('.label');
-                const value = feeRow.querySelector('.value');
-                if (fee === 0) { label.textContent = 'Delivery Fee (Waived)'; value.textContent = 'RM 0.00'; }
-                else { label.textContent = 'Delivery Fee'; value.textContent = 'RM ' + fee.toFixed(2); }
-            } else { feeRow.style.display = 'none'; }
-        }
+const PRODUCTS = RAW_PRODUCTS.map(([sku, name, category, vp, earnBase, retail, d25, d35, d42, d50]) => ({
+  sku, name, category, vp, earnBase,
+  prices: { retail, d25, d35, d42, d50 }
+}));
 
-        // Event delegation
-        document.getElementById('productList').addEventListener('click', e => {
-            if (e.target.classList.contains('add-btn')) {
-                const stock = e.target.dataset.stock;
-                const item = cart.get(stock);
-                if (item) item.qty++;
-                else cart.set(stock, { product: P.find(p => p[0] === stock), qty: 1 });
-                renderCart();
-            }
-        });
-        document.getElementById('cartBody').addEventListener('click', e => {
-            const stock = e.target.dataset.stock;
-            if (e.target.classList.contains('qty-btn')) {
-                const delta = parseInt(e.target.dataset.delta);
-                const item = cart.get(stock);
-                if (item) { item.qty += delta; if (item.qty <= 0) cart.delete(stock); }
-                renderCart();
-            } else if (e.target.classList.contains('remove-btn')) {
-                cart.delete(stock);
-                renderCart();
-            }
-        });
+const PRODUCT_MAP = new Map(PRODUCTS.map(p => [p.sku, p]));
 
-        // Utility
-        const clearCart = () => { cart.clear(); renderCart(); };
-        const updateDeliveryUI = () => {
-            const isDelivery = document.getElementById('delivery').checked;
-            document.getElementById('addressInput').style.display = isDelivery ? 'block' : 'none';
-            renderCart();
-            updateTrialPriceDisplay();
-            updateBasicPriceDisplay();
-            updateAdvancedPriceDisplay();
-            updateUltimatePriceDisplay();
-        };
+/* ---------- Flavour groups ---------- */
+const GROUPS = {
+  f1:    { label:'Formula 1',        prefix:'Formula 1 - ',                            suffix:' Flavour', cartPrefix:'F1',
+           skus:['4462','4465','4466','4467','4468','4470','4471'] },
+  tea:   { label:'Tea Mix',          prefix:'Tea Mix with Hibiscus - ',                suffix:' Flavour', cartPrefix:'Tea',
+           skus:['0105','0106','0190','2121'] },
+  aloe:  { label:'Aloe Concentrate', prefix:'Herbal Aloe Concentrate Mix - ',          suffix:' Flavour', cartPrefix:'Aloe',
+           skus:['0006','1065','2631'] },
+  fibre: { label:'Mixed Fibres',     prefix:'Mixed Fibres with Inulin Powder Drink - ',suffix:' Flavour', cartPrefix:'Fibre',
+           skus:['2864','2865'] },
+  f3:    { label:'Formula 3',        prefix:'Formula 3 - ',                            suffix:' Powder',  cartPrefix:'F3',
+           skus:['0242'] },
+  multi: { label:'Multivitamins',    prefix:'', suffix:'', cartPrefix:'', short:'Multivitamins & Minerals',
+           skus:['3115'] },
+  fish:  { label:'Omega 3',          prefix:'', suffix:'', cartPrefix:'', short:'Omega 3 Fish Oil',
+           skus:['0065'] },
+  immu:  { label:'ImmuLift',         prefix:'', suffix:'', cartPrefix:'', short:'ImmuLift',
+           skus:['145K'] }
+};
 
-        // Event listeners
-        document.querySelectorAll('input[name="delivery"]').forEach(r => r.addEventListener('change', updateDeliveryUI));
-        document.getElementById('regionSelector').addEventListener('change', () => {
-            renderCart();
-            updateTrialPriceDisplay();
-            updateBasicPriceDisplay();
-            updateAdvancedPriceDisplay();
-            updateUltimatePriceDisplay();
-        });
-        document.getElementById('searchInput').addEventListener('input', renderProducts);
-        document.getElementById('categoryFilter').addEventListener('change', renderProducts);
-        document.getElementById('discountTier').addEventListener('change', () => { renderCart(); renderProducts(); renderPrograms(); });
+/* ---------- Program definitions ---------- */
+const PROGRAM_FEE = 100;
+const PROGRAM_EXTRAS = ['182A', '295A'];
 
-        // Init
-        renderProducts();
-        renderPrograms();
-        renderCart();
-    </script>
+const PROGRAMS = [
+  {
+    id:'trial', name:'Trial Program', blurb:'Formula 1 starter kit',
+    components:[ { key:'f1', group:'f1' } ]
+  },
+  {
+    id:'basic', name:'Basic Program', blurb:'Aloe, tea & Formula 1',
+    components:[
+      { key:'aloe', group:'aloe' },
+      { key:'tea',  group:'tea'  },
+      { key:'f1',   group:'f1'   }
+    ]
+  },
+  {
+    id:'advanced', name:'Advanced Program', blurb:'Adds fibre & Formula 3',
+    components:[
+      { key:'aloe',  group:'aloe'  },
+      { key:'tea',   group:'tea'   },
+      { key:'f1',    group:'f1'    },
+      { key:'fibre', group:'fibre' },
+      { key:'f3',    group:'f3'    }
+    ]
+  },
+  {
+    id:'ultimate', name:'Ultimate Program', blurb:'Complete daily nutrition',
+    components:[
+      { key:'aloe',  group:'aloe'  },
+      { key:'tea',   group:'tea'   },
+      { key:'f1',    group:'f1'    },
+      { key:'fibre', group:'fibre' },
+      { key:'f3',    group:'f3'    },
+      { key:'multi', group:'multi' },
+      { key:'fish',  group:'fish'  },
+      { key:'immu',  group:'immu'  }
+    ]
+  }
+];
+
+const PROGRAM_MAP = new Map(PROGRAMS.map(p => [p.id, p]));
+
+/* ============================================================
+   2. STATE
+   ============================================================ */
+const state = {
+  region: 'west',
+  tier: 'retail',
+  category: 'all',
+  search: '',
+  delivery: 'pickup'
+};
+
+/* Live configuration for each program (component key → array of SKUs) */
+const programState = {};
+PROGRAMS.forEach(prog => {
+  programState[prog.id] = {};
+  prog.components.forEach(c => {
+    programState[prog.id][c.key] = [GROUPS[c.group].skus[0]];
+  });
+});
+
+const openPrograms = new Set();   /* which program cards are expanded */
+const cart = [];                  /* cart items */
+let cartUid = 1;
+
+/* ============================================================
+   3. HELPERS
+   ============================================================ */
+const $ = id => document.getElementById(id);
+
+const escapeHtml = str => String(str).replace(/[&<>"']/g,
+  c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const stripAffix = (name, prefix, suffix) => {
+  let out = name;
+  if (prefix && out.startsWith(prefix)) out = out.slice(prefix.length);
+  if (suffix && out.endsWith(suffix))     out = out.slice(0, -suffix.length);
+  return out;
+};
+
+const shortName = (groupKey, sku) => {
+  const g = GROUPS[groupKey];
+  const p = PRODUCT_MAP.get(sku);
+  return g.short ?? stripAffix(p.name, g.prefix, g.suffix);
+};
+
+const roundUpTo10 = n => Math.ceil(n / 10) * 10;
+
+const regionFee = () => (state.region === 'west' ? 16 : 32);
+
+/** Price of a single product for the active tier. */
+const priceOf = (product, tier) => {
+  const value = product.prices[tier];
+  return value == null ? product.prices.retail : value;
+};
+
+/** Delivery fee shown in the summary (waived when a program is in the cart). */
+const summaryFee = () => {
+  if (state.delivery !== 'delivery') return 0;
+  if (cart.some(item => item.kind === 'program')) return 0;
+  return regionFee();
+};
+
+/** Highlight search terms inside already-escaped text. */
+function highlight(text, terms) {
+  const safe = escapeHtml(text);
+  if (!terms.length) return safe;
+  const pattern = terms
+    .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .filter(Boolean)
+    .join('|');
+  if (!pattern) return safe;
+  return safe.replace(new RegExp(`(${pattern})`, 'gi'), '<mark>$1</mark>');
+}
+
+/* ============================================================
+   4. PROGRAM PRICING
+   ============================================================ */
+function programTotal(programId, config) {
+  const prog = PROGRAM_MAP.get(programId);
+  let total = PROGRAM_FEE;
+
+  prog.components.forEach(c => {
+    (config[c.key] || []).forEach(sku => {
+      const product = PRODUCT_MAP.get(sku);
+      if (product) total += product.prices.retail;
+    });
+  });
+
+  PROGRAM_EXTRAS.forEach(sku => {
+    const product = PRODUCT_MAP.get(sku);
+    if (product) total += product.prices.retail;
+  });
+
+  return total;
+}
+
+function programPrice(programId, config) {
+  return roundUpTo10(programTotal(programId, config) + regionFee());
+}
+
+function programVp(programId, config) {
+  const prog = PROGRAM_MAP.get(programId);
+  let vp = 0;
+
+  prog.components.forEach(c => {
+    (config[c.key] || []).forEach(sku => {
+      const product = PRODUCT_MAP.get(sku);
+      if (product) vp += product.vp;
+    });
+  });
+
+  PROGRAM_EXTRAS.forEach(sku => {
+    const product = PRODUCT_MAP.get(sku);
+    if (product) vp += product.vp;
+  });
+
+  return vp;
+}
+
+function buildProgramName(programId, config) {
+  const prog = PROGRAM_MAP.get(programId);
+  const counts = new Map();
+
+  prog.components.forEach(c => {
+    const group = GROUPS[c.group];
+    (config[c.key] || []).forEach(sku => {
+      const name = shortName(c.group, sku);
+      const key = group.cartPrefix ? `${group.cartPrefix} ${name}` : name;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+  });
+
+  const parts = [...counts.entries()].map(([name, n]) => (n > 1 ? `${n}× ${name}` : name));
+  return `${prog.name} (${parts.join(', ')})`;
+}
+
+/* ============================================================
+   5. PRODUCT RENDERING
+   ============================================================ */
+function renderProducts() {
+  const list = $('productList');
+  const terms = state.search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+
+  const filtered = PRODUCTS.filter(p => {
+    if (state.category !== 'all' && p.category !== state.category) return false;
+    if (!terms.length) return true;
+    const haystack = `${p.name} ${p.sku} ${p.category}`.toLowerCase();
+    return terms.every(t => haystack.includes(t));
+  });
+
+  if (!filtered.length) {
+    list.innerHTML = '<p class="empty-note">No products match your search.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => `
+    <div class="product">
+      <div class="product-info">
+        <p class="product-name">${highlight(p.name, terms)}</p>
+        <p class="product-meta">
+          <span class="sku">${escapeHtml(p.sku)}</span>
+          <span>VP ${p.vp.toFixed(2)}</span>
+        </p>
+      </div>
+      <div class="product-buy">
+        <span class="product-price">RM ${priceOf(p, state.tier).toFixed(2)}</span>
+        <button class="icon-btn" type="button"
+                data-action="add-product" data-sku="${escapeHtml(p.sku)}"
+                aria-label="Add ${escapeHtml(p.name)}">+</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   6. PROGRAM RENDERING
+   ============================================================ */
+function renderPrograms() {
+  const list = $('programList');
+
+  list.innerHTML = PROGRAMS.map(prog => {
+    const isOpen = openPrograms.has(prog.id);
+    const price = programPrice(prog.id, programState[prog.id]);
+
+    return `
+      <article class="program${isOpen ? ' is-open' : ''}" data-program="${prog.id}">
+        <div class="program-top">
+          <div>
+            <h3 class="program-name">${escapeHtml(prog.name)}</h3>
+            <p class="program-blurb">${escapeHtml(prog.blurb)}</p>
+          </div>
+          <div class="program-price" data-role="price">RM ${price.toFixed(2)}</div>
+        </div>
+
+        <div class="program-actions">
+          <button class="btn btn-ghost" type="button" data-action="toggle-program">
+            ${isOpen ? 'Close' : 'Configure'}
+          </button>
+          <button class="icon-btn" type="button" data-action="add-program"
+                  aria-label="Add ${escapeHtml(prog.name)}">+</button>
+        </div>
+
+        <div class="program-body" data-role="body" ${isOpen ? '' : 'hidden'}></div>
+      </article>`;
+  }).join('');
+
+  /* Fill in the bodies of any expanded programs */
+  openPrograms.forEach(id => {
+    const card = list.querySelector(`.program[data-program="${id}"]`);
+    if (card) renderProgramBody(id, card.querySelector('[data-role="body"]'));
+  });
+}
+
+function renderProgramBody(programId, container) {
+  const prog = PROGRAM_MAP.get(programId);
+  const config = programState[programId];
+
+  container.innerHTML = prog.components.map(c => {
+    const group = GROUPS[c.group];
+    const skus = config[c.key];
+
+    return `
+      <div class="component" data-component="${c.key}">
+        <div class="component-head">
+          <span class="component-label">${escapeHtml(group.label)}</span>
+          <div class="stepper">
+            <button type="button" data-action="component-qty" data-delta="-1" aria-label="Decrease">−</button>
+            <span data-role="count">${skus.length}</span>
+            <button type="button" data-action="component-qty" data-delta="1" aria-label="Increase">+</button>
+          </div>
+        </div>
+        <div data-role="rows">${renderFlavourRows(c, skus)}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderFlavourRows(component, skus) {
+  const group = GROUPS[component.group];
+
+  return skus.map((sku, i) => `
+    <div class="flavour-row">
+      ${skus.length > 1 ? `<span class="flavour-index">${i + 1}</span>` : ''}
+      <select data-action="component-flavour" data-index="${i}"
+              aria-label="${escapeHtml(group.label)} option ${i + 1}">
+        ${group.skus.map(optionSku => {
+          const selected = optionSku === sku ? ' selected' : '';
+          return `<option value="${optionSku}"${selected}>${escapeHtml(shortName(component.group, optionSku))}</option>`;
+        }).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function updateProgramPrice(programId, card) {
+  const price = programPrice(programId, programState[programId]);
+  const el = card.querySelector('[data-role="price"]');
+  if (el) el.textContent = `RM ${price.toFixed(2)}`;
+}
+
+/* ============================================================
+   7. CART LOGIC
+   ============================================================ */
+function addProductToCart(sku) {
+  const existing = cart.find(item => item.kind === 'product' && item.sku === sku);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ id: cartUid++, kind: 'product', sku, qty: 1 });
+  }
+  renderCart();
+}
+
+function addProgramToCart(programId) {
+  const config = JSON.parse(JSON.stringify(programState[programId]));
+  cart.push({ id: cartUid++, kind: 'program', programId, config, qty: 1 });
+  renderCart();
+}
+
+function cartItemName(item) {
+  if (item.kind === 'program') return buildProgramName(item.programId, item.config);
+  const product = PRODUCT_MAP.get(item.sku);
+  return `${product.sku} — ${product.name}`;
+}
+
+function cartItemUnitPrice(item) {
+  if (item.kind === 'program') return programPrice(item.programId, item.config);
+  return priceOf(PRODUCT_MAP.get(item.sku), state.tier);
+}
+
+function cartItemVp(item) {
+  if (item.kind === 'program') return programVp(item.programId, item.config);
+  return PRODUCT_MAP.get(item.sku).vp;
+}
+
+/* ============================================================
+   8. CART RENDERING
+   ============================================================ */
+function renderCart() {
+  const wrap = $('cartTableWrap');
+
+  /* ---- Table or empty state ---- */
+  if (!cart.length) {
+    wrap.innerHTML = `
+      <div class="cart-empty">
+        <strong>Your cart is empty</strong>
+        Add products or configure a program to get started.
+      </div>`;
+  } else {
+    wrap.innerHTML = `
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cart.map(item => {
+            const unit = cartItemUnitPrice(item);
+            const lineTotal = unit * item.qty;
+            return `
+              <tr>
+                <td class="cell-name">${escapeHtml(cartItemName(item))}</td>
+                <td class="cell-qty">
+                  <div class="qty-control">
+                    <button class="qty-btn" type="button" data-action="qty"
+                            data-id="${item.id}" data-delta="-1" aria-label="Decrease quantity">−</button>
+                    <span class="qty-value">${item.qty}</span>
+                    <button class="qty-btn" type="button" data-action="qty"
+                            data-id="${item.id}" data-delta="1" aria-label="Increase quantity">+</button>
+                  </div>
+                </td>
+                <td class="cell-price">RM ${unit.toFixed(2)}</td>
+                <td class="cell-total">RM ${lineTotal.toFixed(2)}</td>
+                <td class="cell-remove">
+                  <button class="remove-btn" type="button" data-action="remove"
+                          data-id="${item.id}" aria-label="Remove item">✕</button>
+                </td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  /* ---- Totals ---- */
+  const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const subtotal  = cart.reduce((sum, item) => sum + cartItemUnitPrice(item) * item.qty, 0);
+  const vpTotal   = cart.reduce((sum, item) => sum + cartItemVp(item) * item.qty, 0);
+  const fee       = summaryFee();
+
+  $('itemPill').textContent = `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`;
+  $('sumItems').textContent = itemCount;
+  $('sumSubtotal').textContent = `RM ${subtotal.toFixed(2)}`;
+  $('sumVp').textContent = vpTotal.toFixed(2);
+
+  const feeRow = $('sumFeeRow');
+  if (state.delivery === 'delivery') {
+    feeRow.hidden = false;
+    $('sumFeeLabel').textContent = fee === 0 ? 'Delivery Fee (waived)' : 'Delivery Fee';
+    $('sumFee').textContent = `RM ${fee.toFixed(2)}`;
+  } else {
+    feeRow.hidden = true;
+  }
+
+  $('sumTotal').textContent = `RM ${(subtotal + fee).toFixed(2)}`;
+}
+
+/* ============================================================
+   9. EVENT HANDLERS
+   ============================================================ */
+
+/* ---------- Products ---------- */
+$('productList').addEventListener('click', e => {
+  const button = e.target.closest('[data-action="add-product"]');
+  if (button) addProductToCart(button.dataset.sku);
+});
+
+/* ---------- Programs ---------- */
+$('programList').addEventListener('click', e => {
+  const card = e.target.closest('.program');
+  if (!card) return;
+  const programId = card.dataset.program;
+
+  /* Add to cart */
+  if (e.target.closest('[data-action="add-program"]')) {
+    addProgramToCart(programId);
+    return;
+  }
+
+  /* Expand / collapse */
+  if (e.target.closest('[data-action="toggle-program"]')) {
+    const body = card.querySelector('[data-role="body"]');
+    const btn = card.querySelector('[data-action="toggle-program"]');
+    const willOpen = body.hasAttribute('hidden');
+
+    if (willOpen) {
+      renderProgramBody(programId, body);
+      body.removeAttribute('hidden');
+      openPrograms.add(programId);
+      btn.textContent = 'Close';
+      card.classList.add('is-open');
+    } else {
+      body.setAttribute('hidden', '');
+      openPrograms.delete(programId);
+      btn.textContent = 'Configure';
+      card.classList.remove('is-open');
+    }
+    return;
+  }
+
+  /* Component quantity */
+  const qtyBtn = e.target.closest('[data-action="component-qty"]');
+  if (qtyBtn) {
+    const componentEl = qtyBtn.closest('.component');
+    const key = componentEl.dataset.component;
+    const delta = Number(qtyBtn.dataset.delta);
+
+    const skus = programState[programId][key];
+    const next = skus.length + delta;
+    if (next < 1 || next > 10) return;
+
+    const component = PROGRAM_MAP.get(programId).components.find(c => c.key === key);
+
+    if (delta > 0) skus.push(GROUPS[component.group].skus[0]);
+    else skus.pop();
+
+    componentEl.querySelector('[data-role="count"]').textContent = skus.length;
+    componentEl.querySelector('[data-role="rows"]').innerHTML = renderFlavourRows(component, skus);
+    updateProgramPrice(programId, card);
+  }
+});
+
+$('programList').addEventListener('change', e => {
+  const select = e.target.closest('[data-action="component-flavour"]');
+  if (!select) return;
+
+  const card = select.closest('.program');
+  const programId = card.dataset.program;
+  const key = select.closest('.component').dataset.component;
+  const index = Number(select.dataset.index);
+
+  programState[programId][key][index] = select.value;
+  updateProgramPrice(programId, card);
+});
+
+/* ---------- Cart ---------- */
+$('cartTableWrap').addEventListener('click', e => {
+  const button = e.target.closest('[data-action]');
+  if (!button) return;
+
+  const id = Number(button.dataset.id);
+  const index = cart.findIndex(item => item.id === id);
+  if (index === -1) return;
+
+  const action = button.dataset.action;
+
+  if (action === 'qty') {
+    cart[index].qty += Number(button.dataset.delta);
+    if (cart[index].qty <= 0) cart.splice(index, 1);
+    renderCart();
+  } else if (action === 'remove') {
+    cart.splice(index, 1);
+    renderCart();
+  }
+});
+
+/* ---------- Search ---------- */
+$('searchInput').addEventListener('input', e => {
+  state.search = e.target.value;
+  $('searchField').classList.toggle('has-value', state.search.length > 0);
+  renderProducts();
+});
+
+$('searchClear').addEventListener('click', () => {
+  state.search = '';
+  $('searchInput').value = '';
+  $('searchField').classList.remove('has-value');
+  renderProducts();
+  $('searchInput').focus();
+});
+
+/* ---------- Filters ---------- */
+$('categorySelect').addEventListener('change', e => {
+  state.category = e.target.value;
+  renderProducts();
+});
+
+$('tierSelect').addEventListener('change', e => {
+  state.tier = e.target.value;
+  renderProducts();
+  renderCart();
+});
+
+/* ---------- Region ---------- */
+$('regionSelect').addEventListener('change', e => {
+  state.region = e.target.value;
+  renderPrograms();
+  renderCart();
+});
+
+/* ---------- Delivery ---------- */
+document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+  radio.addEventListener('change', e => {
+    state.delivery = e.target.value;
+    $('addressField').hidden = state.delivery !== 'delivery';
+    renderCart();
+  });
+});
+
+/* ---------- Clear cart ---------- */
+$('clearBtn').addEventListener('click', () => {
+  if (!cart.length) return;
+  if (!confirm('Remove all items from the cart?')) return;
+  cart.length = 0;
+  renderCart();
+});
+
+/* ---------- Print ---------- */
+$('printBtn').addEventListener('click', () => {
+  if (!cart.length) {
+    alert('Your cart is empty. Add items before printing.');
+    return;
+  }
+
+  const now = new Date();
+  const orderRef = 'ORD-' + now.getTime().toString(36).toUpperCase().slice(-8);
+
+  $('printDate').textContent = now.toLocaleDateString('en-MY', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+  $('printOrderRef').textContent = orderRef;
+  $('printRefDetail').textContent = orderRef;
+  $('printName').textContent = $('customerName').value || '—';
+  $('printPhone').textContent = $('customerPhone').value || '—';
+  $('printMethod').textContent = state.delivery === 'delivery' ? 'Delivery' : 'Pickup';
+
+  const addressRow = $('printAddressRow');
+  if (state.delivery === 'delivery') {
+    $('printAddress').textContent = $('deliveryAddress').value || '—';
+    addressRow.hidden = false;
+  } else {
+    addressRow.hidden = true;
+  }
+
+  const previousTitle = document.title;
+  document.title = `Order_${orderRef}_${now.toISOString().split('T')[0]}`;
+  window.print();
+  document.title = previousTitle;
+});
+
+/* ============================================================
+   10. INIT
+   ============================================================ */
+renderProducts();
+renderPrograms();
+renderCart();
+</script>
 </body>
 </html>
